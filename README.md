@@ -209,12 +209,15 @@ $jaji->source($_POST)
 
 必須在 `target()` 中的內容一樣。需要注意的是：
 
-**在來源模式下，`target()` 帶入的是欄位名稱，而不是變數。**
+**無論是來源或是手動模式中，`target()` 帶入的是欄位名稱，而不是變數。**
 
-**相反的，當你使用手動模式，`target()` 則應該帶入變數。**
+**但是如果你帶入一個變數，則將第二個參數設為 False 。**
 
 ```php
 ->add('passwordConfirm')->type('equals')->target('password')
+
+/** 倘若你要帶入一個變數，將後面設為 False */
+->add('passwordConfirm')->type('equals')->target($OriginalPassword, false)
 ```
 
 &nbsp;
@@ -223,19 +226,19 @@ $jaji->source($_POST)
 
 在你使用簡寫的時候，可能會發現有些函式與 PHP 內建的重複，但這是不會發生問題的。
 
-| 種類英文   |   簡短    |        簡寫          | 
-| ---------- | --------- | -------------------- | 
-| length     | 長度      |  `length(min, max)`  |
-| range      | 範圍      |  `range(min, max)`   |
-| date       | 日期      |  `date()`            |
-| in         | 清單      |  `inside(list)`      |
-| email      | 電郵      |  `email()`           | 
-| gender     | 性別      |  `gender()`          | 
-| ip         | IP        |  `ip()`              | 
-| ipv4       | IPv4      |  `ipv4()`            |
-| ipv6       | IPv6      |  `ipv6()`            | 
-| url        | 網址      |  `url(urlNot)`       |
-| equals     | 相同      |  `equals()`          |
+| 種類英文   |   簡短    |            簡寫            | 
+| ---------- | --------- | -------------------------- | 
+| length     | 長度      |  `length(min, max)`        |
+| range      | 範圍      |  `range(min, max)`         |
+| date       | 日期      |  `date()`                  |
+| in         | 清單      |  `inside(list)`            |
+| email      | 電郵      |  `email()`                 | 
+| gender     | 性別      |  `gender()`                | 
+| ip         | IP        |  `ip()`                    | 
+| ipv4       | IPv4      |  `ipv4()`                  |
+| ipv6       | IPv6      |  `ipv6()`                  | 
+| url        | 網址      |  `url(urlNot)`             |
+| equals     | 相同      |  `equals(target, isField)` |
 
 &nbsp;
 
@@ -248,7 +251,7 @@ $jaji->source($_POST)
 
 ->add('url')->url()
 
-->add('passwordConfirm')->equals('password')
+->add('passwordConfirm')->equals($Password, false)
 ```
 
 &nbsp;
