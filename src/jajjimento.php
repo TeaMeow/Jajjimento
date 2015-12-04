@@ -7,7 +7,7 @@
 * @package   Jajjimento
 * @author    Yami Odymel <yamiodymel@gmail.com>
 * @copyright Copyright (c) 2015
-* @license   http://opensource.org/licenses/gpl-3.0.html GNU Public License
+* @license   https://en.wikipedia.org/wiki/MIT_License MIT License
 * @link      http://github.com/TeaMeow/Jajjimento
 * @version   1.0
 **/
@@ -23,12 +23,36 @@ class jajjimento
     private $hasAira = false;
     
     /**
+     * The charset of the values, so we can validate them correctly.
+     * 
+     * @var string
+     */
+    
+    private $charset = 'UTF-8';
+     
+    /**
      * Used to store the rules, and we can load the rules from here next time we use it.
      * 
      * @var array
      */
      
     public $rules = [];
+    
+    /**
+     * The safer array, used to store the validated datas.
+     * 
+     * @var array
+     */
+    
+    public $safe = [];
+    
+    /**
+     * Errors here, everyone scared.
+     * 
+     * @var array
+     */
+    
+    private $errors = [];
     
     /**
      * The index of the last rule,
@@ -41,12 +65,12 @@ class jajjimento
     private $last = -1;
     
     /**
-     * Used to check if the validation was passed or not.
+     * The source data.
      * 
-     * @var bool
+     * @var bool|array
      */
-     
-    private $failed = false;
+    
+    private $source = false;
     
     /**
      * @var string      $field        Stores 'this round' rule informations.
@@ -59,9 +83,11 @@ class jajjimento
      * @var string|null $urlNot       Stores 'this round' rule informations.
      * @var bool        $trim         Stores 'this round' rule informations.
      * @var string|null $format       Stores 'this round' rule informations.
+     * @var array|null  $target       Stores 'this round' rule informations.
+     * @var bool        $failed       Stores 'this round' rule informations.
      */
      
-    private $field, $type, $min, $max, $required, $dateFormat, $inside, $urlNot, $trim, $format;
+    private $field, $type, $min, $max, $required, $dateFormat, $inside, $urlNot, $trim, $format, $target, $failed;
 
     
     
@@ -77,7 +103,7 @@ class jajjimento
     public function __call($name, $args) 
     {
         $basicFunctions = ['type', 'min', 'max', 'required', 'format', 'trim', 'req', 'length', 'range',
-                           'date', 'inside', 'email', 'gender', 'ip', 'ipv4', 'ipv6', 'url', 'urlNot'];
+                           'date', 'inside', 'email', 'gender', 'ip', 'ipv4', 'ipv6', 'url', 'urlNot', 'target'];
         
         if(in_array($name, $basicFunctions))
             return call_user_func_array(array($this, '_' . $name), $args);
@@ -128,7 +154,9 @@ class jajjimento
                           'inside'     => null,
                           'urlNot'     => null,
                           'trim'       => false,
-                          'format'     => null];
+                          'format'     => null,
+                          'target'     => null,
+                          'failed'     => false];
        
        /** Change the index */
        $this->last++;
@@ -274,6 +302,25 @@ class jajjimento
     function _format($regex)
     {
         return $this->lastRule('format', $regex);
+    }
+    
+    
+    
+    
+    /**
+     * Target
+     * 
+     * Set the target, so we can validate the two fields were the same or not.
+     * 
+     * @param string $target    The field name of the target which we want to compare, or just the raw variable.
+     * @param bool   $isField   When this is true, we will compare with the field which the name is same as the $target, otherwise we compare with the target directly.
+     * 
+     * @return jajjimento
+     */
+    
+    function _target($target, $isField=true)
+    {
+        return $this->lastRule('target', [$target, $isField]);
     }
     
     
@@ -479,6 +526,22 @@ class jajjimento
     
     
     
+    /**
+     * Equals
+     * 
+     * Shorthands for type('equals')->target().
+     * 
+     * @return jajjimento
+     */
+    
+    function _equals($target, $isField=true)
+    {
+        return $this->type('equals')
+                    ->target($target, $isField);
+    }
+    
+    
+    
     /***********************************************
     /***********************************************
     /************ V A L I D A T I O N **************
@@ -497,10 +560,287 @@ class jajjimento
         {
             /** Explode the variables first */
             $this->setVariables($rule);
+            
+            /** Remove the whitespace at the end of the string if needed */
+            if($this->trim)
+                $this->validateTrim();
+            
+            /** Make sure there's something in the field */
+            if($this->required)
+                if(!$this->validateRequired())
+                    continue;
+                    
+            /** The best part of the jajjimento, most people died here, so, let's go! */
+            switch($this->type)
+            {
+                case 'length': $this->validateLength();   break;
+                case 'range' : $this->validateRange();    break;
+                case 'date'  : $this->validateDate();     break;
+                case 'in'    : $this->validateIn();       break;
+                case 'email' : $this->validateEmail();    break;
+                case 'gender': $this->validateGender();   break;
+                case 'ip'    : $this->validateIp();       break;
+                case 'ipv4'  : $this->validateIp('ipv4'); break;
+                case 'ipv4'  : $this->validateIp('ipv6'); break;
+                case 'url'   : $this->validateUrl();      break;
+                case 'equals': $this->validateEquals();   break;
+            }
+            
+            /** No need to continue if this field was not passed the validation, let's move on to the next field */
+            if($this->failed)
+                continue;
+            
+            /** The last step, check the format */
+            if($this->format)
+                if(!$this->validateFormat())
+                    $this->error('The format is wrong.');
         }
+        
+        /** Call the log function if any errors occurred */
+        if(!empty($this->errors))
+            $this->log();
+        
+        return empty($this->errors);
     }
+    
+    
+    
+    
+    /**
+     * Validate Trim
+     * 
+     * Remove the whitespace at the end of the string.
+     * 
+     * @return jajjimento
+     */
+    
+    function validateTrim()
+    {
+        preg_match('/^[^\w]{0,}(.*?)[^\w]{0,}$/iu', $this->field, $matches);
+   
+        if(count($matches) < 2)
+            return;
+   
+        $this->field = $matches[1];
+        
+        return $this;
+    }
+    
+    
+    
+    
+    /**
+     * Validate Required
+     * 
+     * Check the value and it must not be empty because it's required.
+     * 
+     * @return bool   Returns true when passed, ofcourse false when no.
+     */
+     
+    function validateRequired()
+    {
+        if(!$this->field || ctype_space($this->field) || mb_strlen($this->field, $this->charset) == 0)
+            return $this->error('Required but nothing here.');
 
+       
+        return true;
+    }
+    
+    
+    
+    
+    /**
+     * Validate Length
+     * 
+     * Check the length of the value is long enough like my dick or shorter than mine.
+     * 
+     * @return bool
+     */
+    
+    function validateLength()
+    {
+        $length = mb_strlen($this->field, $this->charset);
+     
+        if($length > $this->max)
+            return $this->error('Too long.');
+        elseif($length < $this->min)
+            return $this->error('Too short.');
+        
+        return true;
+    }
+    
+    
+    
+    
+    /**
+     * Validate Range
+     * 
+     * Make sure the range is within my limit, otherwise I will be pissed off.
+     * 
+     * @return bool
+     */
+    
+    function validateRange()
+    {
+        if(!is_numeric($this->field))
+            return $this->error('Not a numeric.');
 
+        elseif($this->field > $this->max)
+            return $this->error('Too large.');
+
+        elseif($this->field < $this->min)
+            return $this->error('Too small.');
+        
+        return true;
+    }
+    
+    
+    
+    
+    /**
+     * Validate Date
+     * 
+     * Is this date same as the format which we wanted? Better is.
+     * 
+     * @return bool
+     */
+    
+    function validateDate()
+    {
+        $date = DateTime::createFromFormat($this->dateFormat, $this->field);
+        
+        if(!$date && $date->format($this->dateDormat) == $date)
+            return $this->error('Date format is not right or there\'s no this day.');
+        
+        return true;
+    }
+    
+    
+    
+    
+    /**
+     * Validate In
+     * 
+     * Is the value in the array?
+     * 
+     * @return bool
+     */
+    
+    function validateIn()
+    {
+        if(!in_array($this->field, $this->inside))
+            return $this->error('Not inside the list.');
+            
+        return true;
+    }
+   
+    
+    
+    
+    /**
+     * Validate Email
+     * 
+     * Make sure it's an email address.
+     *
+     * @return bool
+     */
+    
+    function validateEmail()
+    {
+        if(!filter_var($this->field, FILTER_VALIDATE_EMAIL))
+            return $this->error('Not an email.');
+            
+        return true;
+    }
+    
+    
+    
+    
+    /**
+     * Validate Gender
+     * 
+     * Yes, I mean, there's should be other genders right, not only men and women living on the earth I think.
+     * 
+     * @return bool
+     */
+    
+    function validateGender()
+    {
+        $gender = strtolower($this->field);
+        
+        if($gender != 'o' || $gender != 'm' || $gender != 'f')
+            return $this->error('Not a gender.');
+        
+        return true;
+    }
+    
+    
+    
+    
+    /**
+     * Validate IP
+     * 
+     * Make sure it's an ip address.
+     * 
+     * @param string|null $type   ipv4 and ipv6, null if both were allowed.
+     * 
+     * @return bool
+     */
+    
+    function validateIp($type=null)
+    {
+        if($type == 'ipv4')
+            if(!filter_var($this->field, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4))
+                return $this->error('Not an ipv4.');
+        
+        if($type == 'ipv6')
+            if(!filter_var($this->field, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6))
+                return $this->error('Not an ipv4.');
+        
+        if(!filter_var($this->field, FILTER_VALIDATE_IP))
+            return $this->error('Not an ip.');
+        
+        return true;
+    }
+    
+    
+    
+    
+    /**
+     * Validate URL
+     * 
+     * Make sure it's an url address.
+     * 
+     * @return bool
+     */
+    
+    function validateUrl()
+    {
+        if(!filter_var($this->field, FILTER_VALIDATE_URL))
+            return $this->error('Not an url address.');
+            
+        return true;
+    }
+    
+    
+    
+    
+    /**
+     * Validate Equals
+     * 
+     * Make sure both were same or ggwp.
+     * 
+     * @return bool
+     */
+    
+    function validateEquals()
+    {
+        $isField = $this->target[1];
+        $compare = ($isField) ? $this->source[$this->target[0]] : $this->target[0;
+        
+        
+        if($this->target[0])
+    }
 
     /***********************************************
     /***********************************************
@@ -546,7 +886,7 @@ class jajjimento
     
     function setVariables($rule)
     {
-        $this->field      = $rule['field'];
+        $this->field      = ($this->source == false) ? $rule['field'] : $this->source[$this->field];
         $this->min        = $rule['min'];
         $this->max        = $rule['max'];
         $this->required   = $rule['required'];
@@ -555,11 +895,38 @@ class jajjimento
         $this->urlNot     = $rule['urlNot'];
         $this->trim       = $rule['trim'];
         $this->format     = $rule['format'];
+        $this->target     = $rule['target'];
 
         /** Set the failed flag back to false like nothing happened before, just like u and ur ex */
         $this->failed     = false;
         
         return $this;
     }
-}
     
+    
+    
+    
+    /***********************************************
+    /***********************************************
+    /****************  E R R O R S *****************
+    /***********************************************
+    /***********************************************
+    
+    /**
+     * Error
+     * 
+     * Log the error data here and why.
+     * 
+     * @param string $reason   Why the rule not passed.
+     * 
+     * @return bool
+     */
+    
+    function error($reason)
+    {
+        $this->failed = true;
+        
+        return false;
+    }
+}
+?>    
