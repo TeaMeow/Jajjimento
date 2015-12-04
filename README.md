@@ -35,7 +35,7 @@ Jajjimento（ジャッジメント）中文涵意是風紀委員，這是用來�
 
 ## 索引
 
-1. [舉例](#abcd)
+1. [舉例](#舉例)
 
 2. [設置來源 或 採用預先規則](#abcd)
 
@@ -293,6 +293,8 @@ $jaji->loadCheck($myRule);
 $myRule = $jaji->save()
 ```
 
+&nbsp;
+
 如果你不是很清楚，我們從頭來過，最後採用儲存的方式。
 
 ```php
@@ -301,6 +303,8 @@ $myRule = $jaji->add('username')->type('length')->min(3)->max(32)->required()->f
                ->add('ip')      ->type('ip');
                ->save();
 ```
+
+&nbsp;
 
 接著 `$myRule` 內就會有一串你剛所儲存的規則，若要使用，請在下次這樣使用：
 
