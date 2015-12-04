@@ -31,6 +31,8 @@ $jaji->source($_POST)
 * 來源 － 可以是 `$_POST` 或 `$_GET`，甚至是一個*陣列*。
 * 手動 － 當你的來源不固定，或者來源是一個變數而非陣列，就應該採用手動。
 
+&nbsp;
+
 **來源模式**
 
 若你要檢查一個陣列中的資料，你就應該用 `source()` 啟用來源模式。
@@ -41,6 +43,8 @@ $jaji->source($_POST)
 $jaji->source($_POST)
      ->add('欄位名稱')   // 假設欄位名稱是 username，那麼你就會檢查 $_POST['username']。
 ```
+
+&nbsp;
 
 **手動模式**
 
@@ -123,17 +127,31 @@ $jaji->manual()
 ->add('url')->type('url')->urlNot(['http://www.google.com/', 'http://www.yahoo.com/'])
 ```
 
+&nbsp;
+
 ### 設置種類的簡寫
+
+在你使用簡寫的時候，可能會發現有些函式與 PHP 內建的重複，但這是不會發生問題的。
 
 | 種類英文   |   簡短    |        簡寫          | 
 | ---------- | --------- | -------------------- | 
-| length     | 長度      |  `min()`, `max()`    |
-| range      | 範圍      |  `min()`, `max()`    |
-| date       | 日期      |  `dateFormat()`      |
-| in         | 清單      |  `inside()`          | 是否存在；這個值必須在 `inside()` 所設定的陣列內。                         |
-| email      | 電郵      |                      | 電子信箱；內容必須是符合電子信箱格式。                                     |
-| gender     | 性別      |                      | 性別種類；性別必須是 f(emale) 或 m(ale) 或 o(ther)。                       |
-| ip         | IP        |                      | IP 地址 ；值必須符合 IPv4 或是 IPv6 的格式。                               |
-| ipv4       | IPv4      |                      | IP 地址 ；值必須符合 IPv4 格式。                                           |
-| ipv6       | IPv6      |                      | IP 地址 ；值必須符合 IPv6 格式。                                           |
-| url        | 網址      |  `urlNot()`          | 網址    ；內容必須是符合一般網址格式，用 `urlNot()` 來新增不允許網址開頭。 |   
+| length     | 長度      |  `length(min, max)`  |
+| range      | 範圍      |  `range(min, max)`   |
+| date       | 日期      |  `date()`            |
+| in         | 清單      |  `inside()`          |
+| email      | 電郵      |  `email()`           | 
+| gender     | 性別      |  `gender()`          | 
+| ip         | IP        |  `ip()`              | 
+| ipv4       | IPv4      |  `ipv4()`            |
+| ipv6       | IPv6      |  `ipv6()`            | 
+| url        | 網址      |  `url(urlNot)`       |  
+
+當你使用簡寫，`type()` 是不必要的。
+
+```php
+->add('username')->length(3, 12)
+
+->add('age')->range(1, 99)
+
+->add('url')->url()
+```
