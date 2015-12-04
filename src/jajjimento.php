@@ -52,7 +52,7 @@ class jajjimento
      * @var array
      */
     
-    private $errors = [];
+    public $errors = [];
     
     /**
      * The index of the last rule,
@@ -87,7 +87,7 @@ class jajjimento
      * @var bool        $failed       Stores 'this round' rule informations.
      */
      
-    private $field, $type, $min, $max, $required, $dateFormat, $inside, $urlNot, $trim, $format, $target, $failed;
+    private $field, $rawField, $type, $min, $max, $required, $dateFormat, $inside, $urlNot, $trim, $format, $target, $failed;
 
     
     
@@ -102,7 +102,7 @@ class jajjimento
     
     public function __call($name, $args) 
     {
-        $basicFunctions = ['type', 'min', 'max', 'required', 'format', 'trim', 'req', 'length', 'range',
+        $basicFunctions = ['type', 'min', 'max', 'required', 'format', 'trim', 'req', 'length', 'range', 'equals',
                            'date', 'inside', 'email', 'gender', 'ip', 'ipv4', 'ipv6', 'url', 'urlNot', 'target'];
         
         if(in_array($name, $basicFunctions))
@@ -128,6 +128,10 @@ class jajjimento
     {
         /** Source must be an array to continue */
         if(!is_array($source)) return $this;
+        
+        $this->source = $source;
+        
+        return $this;
     }
     
     
@@ -149,7 +153,7 @@ class jajjimento
                           'type'       => null,
                           'min'        => null,
                           'max'        => null,
-                          'required'   => null,
+                          'required'   => false,
                           'dateFormat' => null,
                           'inside'     => null,
                           'urlNot'     => null,
@@ -542,16 +546,19 @@ class jajjimento
     
     
     
+    
     /***********************************************
     /***********************************************
-    /************ V A L I D A T I O N **************
+    /****************** F I N A L ******************
     /***********************************************
     /***********************************************
-
+    
     /**
      * Check 
      * 
      * Here to start the validation.
+     * 
+     * @return bool
      */
      
     function check()
@@ -569,6 +576,9 @@ class jajjimento
             if($this->required)
                 if(!$this->validateRequired())
                     continue;
+            
+            /** Turn the empty string to null */
+            $this->emptyToNull();
                     
             /** The best part of the jajjimento, most people died here, so, let's go! */
             switch($this->type)
@@ -594,18 +604,74 @@ class jajjimento
             if($this->format)
                 if(!$this->validateFormat())
                     $this->error('The format is wrong.');
+            
+            /** Store the safer data to the safe */
+            if($this->source)
+                $this->safe[$rule['field']] = $this->field;
         }
         
         /** Call the log function if any errors occurred */
         if(!empty($this->errors))
             $this->log();
         
-        return empty($this->errors);
+        $isEmpty = empty($this->errors);
+        
+        /** Remove the safe if the validation failure */
+        $this->safe = [];
+        
+        $this->clean();
+        
+        return $isEmpty;
     }
     
     
     
     
+    /**
+     * Load Check
+     * 
+     * Load the rules and start a validation with those rules.
+     * 
+     * @param array $rules   A jajjimento generated rules .
+     * 
+     * @return bool
+     */
+    
+    function loadCheck($rules)
+    {
+        $this->rules = $rules;
+        
+        return $this->check();
+    }
+    
+    
+    
+    
+    /**
+     * Save
+     * 
+     * Return the rules.
+     * 
+     * @retrun array
+     */
+    
+    function save()
+    {
+        $rules = $this->rules;
+
+        $this->clean();
+        
+        return $rules;
+    }
+    
+    
+    
+    /***********************************************
+    /***********************************************
+    /************ V A L I D A T I O N **************
+    /***********************************************
+    /***********************************************
+
     /**
      * Validate Trim
      * 
@@ -682,6 +748,9 @@ class jajjimento
     
     function validateRange()
     {
+        if(!$this->required && $this->field == null)
+            return true;
+        
         if(!is_numeric($this->field))
             return $this->error('Not a numeric.');
 
@@ -836,11 +905,35 @@ class jajjimento
     function validateEquals()
     {
         $isField = $this->target[1];
-        $compare = ($isField) ? $this->source[$this->target[0]] : $this->target[0;
+        $target  = $this->target[0];
+        $compare = ($isField) ? $this->source[$target] : $target;
         
-        
-        if($this->target[0])
+        if($this->field != $compare)
+            return $this->error('Both weren\'t the same.');
     }
+    
+    
+    
+    
+    /**
+     * Validate Format
+     * 
+     * Time to RegEx.
+     * 
+     * @return bool
+     */
+    
+    function validateFormat()
+    {
+        preg_match($this->format, $this->field, $matches);
+   
+        if(count($matches) < 2)
+            return $this->error('The format was not correct.');
+        
+        return true;
+    }
+
+
 
     /***********************************************
     /***********************************************
@@ -886,7 +979,9 @@ class jajjimento
     
     function setVariables($rule)
     {
-        $this->field      = ($this->source == false) ? $rule['field'] : $this->source[$this->field];
+        $this->field      = ($this->source == false) ? $rule['field'] : $this->source[$rule['field']];
+        $this->rawField   = $rule['field'];
+        $this->type       = $rule['type'];
         $this->min        = $rule['min'];
         $this->max        = $rule['max'];
         $this->required   = $rule['required'];
@@ -904,6 +999,45 @@ class jajjimento
     }
     
     
+    
+    
+    /**
+     * Clean
+     * 
+     * @return jajjimento
+     */
+    
+    function clean()
+    {
+        $this->field    = $this->rawField   = $this->type   = $this->min    = $this->max  = 
+        $this->required = $this->dateFormat = $this->inside = $this->urlNot = $this->trim = 
+        $this->format   = $this->target     = $this->failed = null;
+        
+        $this->rules  = [];
+        $this->last   = -1;
+        $this->source = false;
+    }
+    
+    
+    
+    
+    /**
+     * Empty To Null
+     * 
+     * Turn the emprt string to null.
+     * 
+     * @return jajjimento
+     */
+    
+    function emptyToNull()
+    {
+        if($this->field == '')
+            $this->field = null;
+            
+        return $this;
+    }
+    
+
     
     
     /***********************************************
@@ -924,9 +1058,38 @@ class jajjimento
     
     function error($reason)
     {
+        $this->errors[] = ['field'      => $this->field,
+                           'rawField'   => $this->rawField,
+                           'type'       => $this->type,
+                           'min'        => $this->min, 
+                           'max'        => $this->max, 
+                           'required'   => $this->required, 
+                           'dateFormat' => $this->dateFormat, 
+                           'inside'     => $this->inside, 
+                           'urlNot'     => $this->urlNot, 
+                           'trim'       => $this->trim, 
+                           'format'     => $this->format, 
+                           'target'     => $this->target,
+                           'reason'     => $reason,
+                           'time'       => time()];
+                           
         $this->failed = true;
         
         return false;
+    }
+    
+    
+    
+    
+    /**
+     * Log
+     * 
+     */
+     
+    function log()
+    {
+        return ($this->hasAira) ? Aira::Add('INCORRECT_FORM') 
+                                : $this;
     }
 }
 ?>    
