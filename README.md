@@ -1,3 +1,15 @@
+&nbsp;
+
+<p align="center">
+  <img src="http://i.imgur.com/QqGiSvi.png"/>
+</p>
+<p align="center">
+  <i>Stop it when it's false.</i>
+</p>
+
+&nbsp;
+
+
 # Jajjimento
 
 Jajjimento（ジャッジメント）中文涵意是風紀委員，這是用來驗證表單的 PHP 類別，
