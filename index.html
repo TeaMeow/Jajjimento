@@ -133,10 +133,11 @@
 <h4>
 <a id="手動模式" class="anchor" href="#%E6%89%8B%E5%8B%95%E6%A8%A1%E5%BC%8F" aria-hidden="true"><span class="octicon octicon-link"></span></a>手動模式</h4>
 
-<p>今天如果你並沒有陣列要檢查，而是想直接檢查一個變數，則是 <code>manual()</code>。</p>
+<p>今天如果你並沒有陣列要檢查，而是想直接檢查一個變數，</p>
 
-<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$jaji</span><span class="pl-k">-&gt;</span>manual()</span>
-<span class="pl-s1">     <span class="pl-k">-&gt;</span>add(<span class="pl-smi">$Test</span>)   <span class="pl-c">// 在這個情況，$Test 會直接成為來源，該變數的內容會被檢查。</span></span></pre></div>
+<p><strong>你則不需要設置 <code>source()</code> 而是應該直接進行新增規則的動作。</strong></p>
+
+<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$jaji</span><span class="pl-k">-&gt;</span>add(<span class="pl-smi">$Test</span>)   <span class="pl-c">// 在這個情況，$Test 會直接成為來源，該變數的內容會被檢查。</span></span></pre></div>
 
 <p> </p>
 
@@ -477,19 +478,22 @@
 <h2>
 <a id="取得驗證後的資料" class="anchor" href="#%E5%8F%96%E5%BE%97%E9%A9%97%E8%AD%89%E5%BE%8C%E7%9A%84%E8%B3%87%E6%96%99" aria-hidden="true"><span class="octicon octicon-link"></span></a>取得驗證後的資料</h2>
 
-<p>驗證後的資料可能會比較安全一點<em>（我是說，你網站最終被駭入，還是不應該找我，對吧。）</em></p>
+<p>驗證後的資料可能會比較安全一點<em>（我是說，你網站最終被駭入，還是不應該找我，對吧？）</em></p>
 
-<p>你可以透過 <code>done()</code> 來取得一個被驗證後的資料。</p>
+<p>你可以透過 <code>safe</code> 來取得一個被驗證後的資料。</p>
 
-<p><strong>請注意：如果前一個驗證是錯誤的，那麼可能會取得不完整的資料，</strong></p>
+<p><strong>請注意：如果這次的驗證是錯誤的，那麼你將會取得到一個空白的陣列，</strong></p>
 
-<p><strong>最好的方法是在前一個驗證錯誤的時候就中止繼續。</strong></p>
+<p><strong>最好的方法是在驗證錯誤的時候就中止繼續。</strong></p>
 
 <div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-c">/** 先驗證 */</span></span>
 <span class="pl-s1"><span class="pl-smi">$jaji</span><span class="pl-k">-&gt;</span>check();</span>
 <span class="pl-s1"></span>
 <span class="pl-s1"><span class="pl-c">/** 然後把這個拿來做後續資料處理 */</span></span>
-<span class="pl-s1"><span class="pl-smi">$jaji</span><span class="pl-k">-&gt;</span>done();</span></pre></div>
+<span class="pl-s1"><span class="pl-smi">$safe</span> <span class="pl-k">=</span> <span class="pl-smi">$jaji</span><span class="pl-k">-&gt;</span><span class="pl-smi">safe</span>;</span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-c">/** 像這樣 */</span></span>
+<span class="pl-s1">foobar(<span class="pl-smi">$safe</span>[<span class="pl-s"><span class="pl-pds">'</span>username<span class="pl-pds">'</span></span>]);</span></pre></div>
 
 <p> </p>
 
@@ -498,7 +502,7 @@
 
 <p>一旦你完成了設置，你可以選擇不要檢查（也就是不要驗證），而是使用下列方式儲存在一個變數中。</p>
 
-<p><strong>如果你決定要儲存成規則，那麼就請不要指定來源（<code>source()</code> 或 <code>manual()</code>），因為那是無用的。</strong></p>
+<p><strong>如果你決定要儲存成規則，那麼就請不要指定來源，因為那是無用的。</strong></p>
 
 <div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$myRule</span> <span class="pl-k">=</span> <span class="pl-smi">$jaji</span><span class="pl-k">-&gt;</span>save()</span></pre></div>
 
