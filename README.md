@@ -317,3 +317,19 @@ $jaji->source($_POST)
 ```
 
 如此一來，就會以剛才的規則去檢查 $_POST。
+
+&nbsp;
+
+## 當「艾拉」存在的時候
+
+如果你有 [艾拉](http://github.com/TeaMeow/Aira) 來協助你處理錯誤，
+
+那麼你應該將此這為 True（預設為 False。）。
+
+```php
+$jaji->hasAira = true;
+```
+
+接下來， `aira::add('INCORRECT_FORM')` 將會在驗證失敗時被呼叫。
+
+
