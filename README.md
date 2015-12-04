@@ -16,6 +16,9 @@ $jaji->source($_POST)
 
      /** 稍後會提及如何設定規則 */
      ->add('username')->type('length')->min(3)->max(16)->required()
+     
+     /** 你也可以用簡寫 */
+     ->add('username')->length(3, 16)->req()
 
      /** 一旦設定都好了，接下來就該檢查了！ */
      ->check();
@@ -59,13 +62,15 @@ $jaji->manual()
 | length     | 長度      |  `min()`, `max()`    | 字串長度；字串必須短於 `max()`，也至少長於 `min()` 所設定的值。            |
 | range      | 範圍      |  `min()`, `max()`    | 數字範圍；數字必須小於 `max()`，也至少大於 `min()` 所設定的值。            |
 | date       | 日期      |  `dateFormat()`      | 日期格式；日期必須是 `dateFormat()` 所設定的格式，例如 `YYYY-MM-DD`。      |
-| in         | 清單      |  `inside()`, `max()` | 是否存在；這個值必須在 `inside()` 所設定的陣列內。                         |
+| in         | 清單      |  `inside()`          | 是否存在；這個值必須在 `inside()` 所設定的陣列內。                         |
 | email      | 電郵      |                      | 電子信箱；內容必須是符合電子信箱格式。                                     |
 | gender     | 性別      |                      | 性別種類；性別必須是 f(emale) 或 m(ale) 或 o(ther)。                       |
 | ip         | IP        |                      | IP 地址 ；值必須符合 IPv4 或是 IPv6 的格式。                               |
 | ipv4       | IPv4      |                      | IP 地址 ；值必須符合 IPv4 格式。                                           |
 | ipv6       | IPv6      |                      | IP 地址 ；值必須符合 IPv6 格式。                                           |
 | url        | 網址      |  `urlNot()`          | 網址    ；內容必須是符合一般網址格式，用 `urlNot()` 來新增不允許網址開頭。 |        
+
+&nbsp;
 
 **`min()` 和 `max()` 的用法**
 
@@ -74,6 +79,8 @@ $jaji->manual()
 ```php
 ->add('username')->type('length')->min(3)->max(6)
 ```
+
+&nbsp;
 
 **`dateFormat()` 的用法**
 
@@ -84,5 +91,49 @@ $jaji->manual()
 簡單說就是你在 PHP 中常見的「YYYY-mm-dd」或「dd/mm/YYYY」之類。
 
 ```php
-->add('username')->type('length')->min(3)->max(6)
+->add('username')->type('date')->dateFormat('YYYY-mm-dd')
+
+/** 或是 */
+->add('birthday')->type('date')->dateFormat(['YYYY-mm-dd', 'mm/dd/YYYY'])
 ```
+
+&nbsp;
+
+**`inside()` 的用法**
+
+必須在 `inside()` 所指定陣列中找的到這個值。
+
+```php
+->add('options')->type('in')->inside(['A', 'B', 'C', 'D'])
+```
+
+&nbsp;
+
+**`urlNot()` 的用法**
+
+網址不可以是以什麼開頭的，例如 `http` 或 `https`，設定可以是單一個，或是陣列。
+
+```php
+->add('url')->type('url')->urlNot('ftp')
+
+/** 或是 */
+->add('url')->type('url')->urlNot(['http', 'https'])
+
+/** 你也可以 */
+->add('url')->type('url')->urlNot(['http://www.google.com/', 'http://www.yahoo.com/'])
+```
+
+### 設置種類的簡寫
+
+| 種類英文   |   簡短    |        簡寫          | 
+| ---------- | --------- | -------------------- | 
+| length     | 長度      |  `min()`, `max()`    |
+| range      | 範圍      |  `min()`, `max()`    |
+| date       | 日期      |  `dateFormat()`      |
+| in         | 清單      |  `inside()`          | 是否存在；這個值必須在 `inside()` 所設定的陣列內。                         |
+| email      | 電郵      |                      | 電子信箱；內容必須是符合電子信箱格式。                                     |
+| gender     | 性別      |                      | 性別種類；性別必須是 f(emale) 或 m(ale) 或 o(ther)。                       |
+| ip         | IP        |                      | IP 地址 ；值必須符合 IPv4 或是 IPv6 的格式。                               |
+| ipv4       | IPv4      |                      | IP 地址 ；值必須符合 IPv4 格式。                                           |
+| ipv6       | IPv6      |                      | IP 地址 ；值必須符合 IPv6 格式。                                           |
+| url        | 網址      |  `urlNot()`          | 網址    ；內容必須是符合一般網址格式，用 `urlNot()` 來新增不允許網址開頭。 |   
