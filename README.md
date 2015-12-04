@@ -130,7 +130,7 @@ $jaji->add($Test)   // 在這個情況，$Test 會直接成為來源，該變數
 
 ```php
 $jaji->source($_POST)
-     ->loadCheck($Rule)   // 接下來會套用 $Rule 內所含有的規則並檢查。
+     ->loadCheck($rule)   // 接下來會套用 $Rule 內所含有的規則並檢查。
 ```
 
 &nbsp;
