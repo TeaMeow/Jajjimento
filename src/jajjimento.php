@@ -12,6 +12,8 @@
 * @version   1.0
 **/
 
+session_start();
+
 class jajjimento
 {
     /** 
@@ -71,6 +73,46 @@ class jajjimento
      */
     
     private $source = false;
+    
+    /**
+     * The CSRF switch, set false when you don't want the csrf proection.
+     * 
+     * @var bool
+     */
+    
+    public $csrf = true;
+    
+    /**
+     * The name of the hashed csrf token which we stored in the COOKIES.
+     * 
+     * @var string
+     */
+     
+    public $csrfCookieName = 'jajjimento_token';
+    
+    /**
+     * The name of the csrf token field which you should passed though the form.
+     * 
+     * @var string
+     */
+     
+    public $csrfFieldName = 'jajjimento_token';
+    
+    /**
+     * The name of the csrf token which we stored in the SESSIONS.
+     * 
+     * @var string
+     */
+    
+    public $csrfName  = 'jajjimentoToken';
+    
+    /**
+     * The name of the csrf token header.
+     * 
+     * @var string
+     */
+     
+    public $csrfHeaderName = 'X-CSRF-TOKEN';
     
     /**
      * @var string      $field        Stores 'this round' rule informations.
@@ -563,6 +605,10 @@ class jajjimento
      
     function check()
     {
+        /** Check the csrf token and make sure it's not manual mode */
+        if($this->csrf && $this->source)
+            $this->Csrf();
+        
         foreach($this->rules as $rule)
         {
             /** Explode the variables first */
@@ -663,6 +709,167 @@ class jajjimento
         
         return $rules;
     }
+    
+    
+    
+    
+    /***********************************************
+    /***********************************************
+    /****************** C S R F ********************
+    /***********************************************
+    /***********************************************
+    
+    /**
+     * Process Csrf Protection
+     * 
+     * @return jajjimento
+     */
+    
+    function Csrf()
+    {
+        /** Generate a new csfr token if there's no token generated */
+        if(!$this->hasCsrf())
+            $this->initializeCsrf();
+
+        //if(!hash_equals($token, crypy($trueToken, $key)))
+        //
+        
+        if(!$this->csrfHeaderCheck() && !$this->csrfFieldCheck())
+            $this->error('Crumb error.');
+        
+        return $this;
+    }
+    
+    
+    
+    
+    /**
+     * Csrf Header Check
+     * 
+     * Check the csrf token is in the header and correct or not.
+     * 
+     * @return bool
+     */
+    
+    function csrfHeaderCheck()
+    {
+        $token = false;
+        
+        /** Get the value of the custom header */
+        foreach (getallheaders() as $name => $value)
+            if($name == $this->csrfHeaderName)
+                $token = $value;
+        
+        return $this->csrfValidate($token);
+    }
+    
+    
+    
+    
+    /**
+     * Csrf Field Check
+     * 
+     * Check the csrf token is in the field and correct or not.
+     * 
+     * @return bool
+     */
+    
+    function csrfFieldCheck()
+    {
+        $token = $this->source[$this->csrfFieldName];
+        
+        return $this->csrfValidate($token);
+    }
+    
+    
+    
+    
+    /**
+     * Csrf Validate
+     * 
+     * Compare two tokens were the same or not.
+     * 
+     * @param string|false $token   The token which we got from the cilent side.
+     * 
+     * @return bool
+     */
+     
+    function csrfValidate($token=false)
+    {
+        if(!$token) return false;
+        
+        return $token == $_SESSION[$this->csrfName];
+    }
+    
+    
+    
+    
+    /**
+     * Return Hashed Crumb
+     * 
+     * @return string
+     */
+    
+    function getCrumbValue()
+    {
+        return $_SESSION[$this->csrfName];
+    }
+    
+    
+    
+    
+    /**
+     * Insert Crumb
+     * 
+     * @return string
+     */
+    
+    function insertCrumb()
+    {
+        return '<input type="hidden" name="' . $this->csrfFieldName . '" value="' . $_SESSION[$this->csrfName] . '">';
+    }
+    
+    
+    
+    
+    /**
+     * Has Csrf
+     * 
+     * Returns true if we had already initialized the csrf protection thing.
+     * 
+     * @return bool
+     */
+    
+    function hasCsrf()
+    {
+        return isset($_SESSION[$this->csrfName]);
+    }
+    
+    
+    
+    
+    /**
+     * Initialize Csrf
+     * 
+     * Initialize the csrf token and the key.
+     * 
+     * @return jajjimento
+     */
+     
+    function initializeCsrf()
+    {
+        /** Generate a random string */
+        $token        = md5(uniqid(mt_rand(), true));
+        
+        /** Store the token into the session */
+        $_SESSION[$this->csrfName]    = $token;
+        /** Store the hashed token into the cookie */
+        setcookie($this->csrfCookieName, $token, time() + (10 * 365 * 24 * 60 * 60), '', '', false, true);
+
+
+        return $this;
+    }
+    
     
     
     
