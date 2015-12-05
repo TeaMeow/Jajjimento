@@ -1,9 +1,11 @@
 <?php
 include('../src/jajjimento.php');
 
+$jaji = new Jajjimento();
+
 if(isset($_POST['username']))
 {
-    $jaji = new Jajjimento();
+    
     
     $rules = $jaji->add('username')->length(3, 12)->req()
                   ->add('password')->length(6, 30)->req()
@@ -119,6 +121,7 @@ if(isset($_POST['username']))
   <p>URL <strong>required, type: url</strong></p>
   <input type="text" name="url">
   <p><button>Submit</button></p>
+  <?= $jaji->insertCrumb(); ?>
 </form>
 
 <?php } ?>
