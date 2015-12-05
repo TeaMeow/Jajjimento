@@ -423,10 +423,10 @@ $jaji->source($_POST)
 
 #### 開關跨站表單檢查
 
-跨站表單預設是開啟的，想要關閉，將下列設置為 False：
+跨站表單預設是關閉的，欲要開啟，將下列設置為 True：
 
 ```php
-$jaji->csrf = false;
+$jaji->csrf = true;
 ```
 
 &nbsp;

@@ -80,7 +80,7 @@ class jajjimento
      * @var bool
      */
     
-    public $csrf = true;
+    public $csrf = false;
     
     /**
      * The name of the hashed csrf token which we stored in the COOKIES.
