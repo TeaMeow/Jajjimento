@@ -26,7 +26,7 @@
 
 <p>用法簡單，你甚至可以先儲存設定，假若要重複使用該規則，只需要幾條指令。</p>
 
-<p>和以往的版本不同，這次比較偏向物件導向方式。</p>
+<p>和以往的版本不同，這次比較偏向物件導向方式，且新增了跨站表單檢查功能。</p>
 
 <p> </p>
 
@@ -39,6 +39,7 @@
 <li><p>可以檢查陣列，或是直接檢查變數。</p></li>
 <li><p>更具有意義的函式名稱卻又簡短。 </p></li>
 <li><p>支援艾拉。</p></li>
+<li><p>跨站表單 (CSRF) 檢查。</p></li>
 </ol>
 
 <p> </p>
@@ -80,6 +81,19 @@
 <li><p><a href="#%E9%A9%97%E8%AD%89">驗證</a></p></li>
 <li><p><a href="#%E5%8F%96%E5%BE%97%E9%A9%97%E8%AD%89%E5%BE%8C%E7%9A%84%E8%B3%87%E6%96%99">取得驗證後的資料</a></p></li>
 <li><p><a href="#%E5%84%B2%E5%AD%98%E6%88%90%E9%A0%90%E5%85%88%E8%A6%8F%E5%89%87">儲存成預先規則</a></p></li>
+<li>
+<p><a href="#%E8%B7%A8%E7%AB%99%E8%A1%A8%E5%96%AE%E9%A9%97%E8%AD%89%E5%8F%AF%E9%81%B8">跨站表單驗證（可選）</a></p>
+
+<ul>
+<li><a href="#%E5%8E%9F%E7%90%86">原理</a></li>
+<li><a href="#%E5%BF%85%E9%A0%88%E9%9C%80%E6%B1%82%5D">必須需求</a></li>
+<li><a href="#%E9%96%8B%E9%97%9C%E8%B7%A8%E7%AB%99%E8%A1%A8%E5%96%AE%E6%AA%A2%E6%9F%A5">開關跨站表單檢查</a></li>
+<li><a href="#%E5%90%8D%E7%A8%B1%E8%A8%AD%E5%AE%9A">名稱設定</a></li>
+<li><a href="#%E5%8F%96%E5%BE%97%E9%BA%B5%E5%8C%85%E5%B1%91%E5%85%A7%E5%AE%B9">取得麵包屑內容</a></li>
+<li><a href="#%E6%8F%92%E5%85%A5%E9%A9%97%E8%AD%89%E6%AC%84%E4%BD%8D">插入驗證欄位</a></li>
+<li><a href="#%E9%97%9C%E6%96%BC-xhrajax%E8%88%87%E6%A8%99%E9%A0%AD">關於 XHR（AJAX）與標頭</a></li>
+</ul>
+</li>
 <li><p><a href="#%E7%95%B6%E8%89%BE%E6%8B%89%E5%AD%98%E5%9C%A8%E7%9A%84%E6%99%82%E5%80%99">當「艾拉」存在的時候</a></p></li>
 </ol>
 
@@ -241,8 +255,8 @@
 
 <p> </p>
 
-<h5>
-<a id="min-和-max-的用法" class="anchor" href="#min-%E5%92%8C-max-%E7%9A%84%E7%94%A8%E6%B3%95" aria-hidden="true"><span class="octicon octicon-link"></span></a><code>min()</code> 和 <code>max()</code> 的用法</h5>
+<h4>
+<a id="min-和-max-的用法" class="anchor" href="#min-%E5%92%8C-max-%E7%9A%84%E7%94%A8%E6%B3%95" aria-hidden="true"><span class="octicon octicon-link"></span></a><code>min()</code> 和 <code>max()</code> 的用法</h4>
 
 <p>長度或數字必須大於 <code>min()</code> ，且小於或短於 <code>max()</code> 所設定的值。</p>
 
@@ -250,8 +264,8 @@
 
 <p> </p>
 
-<h5>
-<a id="dateformat-的用法" class="anchor" href="#dateformat-%E7%9A%84%E7%94%A8%E6%B3%95" aria-hidden="true"><span class="octicon octicon-link"></span></a><code>dateFormat()</code> 的用法</h5>
+<h4>
+<a id="dateformat-的用法" class="anchor" href="#dateformat-%E7%9A%84%E7%94%A8%E6%B3%95" aria-hidden="true"><span class="octicon octicon-link"></span></a><code>dateFormat()</code> 的用法</h4>
 
 <p><code>dateFormat()</code> 用來設定什麼日期格式可以被接受，</p>
 
@@ -266,8 +280,8 @@
 
 <p> </p>
 
-<h5>
-<a id="inside-的用法" class="anchor" href="#inside-%E7%9A%84%E7%94%A8%E6%B3%95" aria-hidden="true"><span class="octicon octicon-link"></span></a><code>inside()</code> 的用法</h5>
+<h4>
+<a id="inside-的用法" class="anchor" href="#inside-%E7%9A%84%E7%94%A8%E6%B3%95" aria-hidden="true"><span class="octicon octicon-link"></span></a><code>inside()</code> 的用法</h4>
 
 <p>必須在 <code>inside()</code> 所指定陣列中找的到這個值。</p>
 
@@ -275,8 +289,8 @@
 
 <p> </p>
 
-<h5>
-<a id="urlnot-的用法" class="anchor" href="#urlnot-%E7%9A%84%E7%94%A8%E6%B3%95" aria-hidden="true"><span class="octicon octicon-link"></span></a><code>urlNot()</code> 的用法</h5>
+<h4>
+<a id="urlnot-的用法" class="anchor" href="#urlnot-%E7%9A%84%E7%94%A8%E6%B3%95" aria-hidden="true"><span class="octicon octicon-link"></span></a><code>urlNot()</code> 的用法</h4>
 
 <p>網址不可以是以什麼開頭的，例如 <code>http</code> 或 <code>https</code>，設定可以是單一個，或是陣列。</p>
 
@@ -290,8 +304,8 @@
 
 <p> </p>
 
-<h5>
-<a id="target-的用法" class="anchor" href="#target-%E7%9A%84%E7%94%A8%E6%B3%95" aria-hidden="true"><span class="octicon octicon-link"></span></a><code>target()</code> 的用法</h5>
+<h4>
+<a id="target-的用法" class="anchor" href="#target-%E7%9A%84%E7%94%A8%E6%B3%95" aria-hidden="true"><span class="octicon octicon-link"></span></a><code>target()</code> 的用法</h4>
 
 <p>必須在 <code>target()</code> 中的內容一樣。需要注意的是：</p>
 
@@ -428,8 +442,8 @@
 
 <p> </p>
 
-<h5>
-<a id="required-或-req-的用法" class="anchor" href="#required-%E6%88%96-req-%E7%9A%84%E7%94%A8%E6%B3%95" aria-hidden="true"><span class="octicon octicon-link"></span></a><code>required()</code> 或 <code>req()</code> 的用法</h5>
+<h4>
+<a id="required-或-req-的用法" class="anchor" href="#required-%E6%88%96-req-%E7%9A%84%E7%94%A8%E6%B3%95" aria-hidden="true"><span class="octicon octicon-link"></span></a><code>required()</code> 或 <code>req()</code> 的用法</h4>
 
 <p>這會讓某個欄位成為必填項目，如果<strong>內容只有空白</strong>，或是<strong>完全沒內容</strong>，就會無法通過，</p>
 
@@ -445,8 +459,8 @@
 
 <p> </p>
 
-<h5>
-<a id="format-的用法" class="anchor" href="#format-%E7%9A%84%E7%94%A8%E6%B3%95" aria-hidden="true"><span class="octicon octicon-link"></span></a><code>format()</code> 的用法</h5>
+<h4>
+<a id="format-的用法" class="anchor" href="#format-%E7%9A%84%E7%94%A8%E6%B3%95" aria-hidden="true"><span class="octicon octicon-link"></span></a><code>format()</code> 的用法</h4>
 
 <p>這會限制內容必須是什麼格式，這個的用法為 <a href="https://en.wikipedia.org/wiki/Regular_expression">正規表達式</a>。</p>
 
@@ -454,8 +468,8 @@
 
 <p> </p>
 
-<h5>
-<a id="trim-的用法" class="anchor" href="#trim-%E7%9A%84%E7%94%A8%E6%B3%95" aria-hidden="true"><span class="octicon octicon-link"></span></a><code>trim()</code> 的用法</h5>
+<h4>
+<a id="trim-的用法" class="anchor" href="#trim-%E7%9A%84%E7%94%A8%E6%B3%95" aria-hidden="true"><span class="octicon octicon-link"></span></a><code>trim()</code> 的用法</h4>
 
 <p>移除字尾最後的空白。</p>
 
@@ -523,6 +537,115 @@
 <span class="pl-s1">     <span class="pl-k">-&gt;</span>loadCheck(<span class="pl-smi">$myRule</span>);</span></pre></div>
 
 <p>如此一來，就會以剛才的規則去檢查 $_POST。</p>
+
+<p> </p>
+
+<h2>
+<a id="跨站表單驗證可選" class="anchor" href="#%E8%B7%A8%E7%AB%99%E8%A1%A8%E5%96%AE%E9%A9%97%E8%AD%89%E5%8F%AF%E9%81%B8" aria-hidden="true"><span class="octicon octicon-link"></span></a>跨站表單驗證（可選）</h2>
+
+<p>跨站表單通常是被建議開啟的，無論做什麼，</p>
+
+<p><strong>風紀委員都建議你不要將這個功能關閉，直至你有另一個跨站表單的檢查功能。</strong></p>
+
+<p> </p>
+
+<h4>
+<a id="原理" class="anchor" href="#%E5%8E%9F%E7%90%86" aria-hidden="true"><span class="octicon octicon-link"></span></a>原理</h4>
+
+<p>風紀委員對跨站表單驗證的處理方式是，先在你第一次進入這個網站的時候，</p>
+
+<p><strong>生成一個隨機字串</strong>，如此一來只有那個使用者知道該字串，</p>
+
+<p>接下來的表單欄位或是請求標頭，都至少需要含有這個字串，否則風紀委員都會拒絕接受。</p>
+
+<p> </p>
+
+<h4>
+<a id="必須需求" class="anchor" href="#%E5%BF%85%E9%A0%88%E9%9C%80%E6%B1%82" aria-hidden="true"><span class="octicon octicon-link"></span></a>必須需求</h4>
+
+<p>你的表單或是來源標頭，<strong>至少要有一個地方含有用以檢查是否正常送出的「麵包屑（Crumb）」</strong>，</p>
+
+<p>你可以<strong>透過稍候提供的方式來將麵包屑包含在你的表單中</strong>，</p>
+
+<p>或是<strong>放置在請求標頭</strong>，否則風紀委員都會<strong>拒絕接受</strong>。</p>
+
+<p> </p>
+
+<h4>
+<a id="開關跨站表單檢查" class="anchor" href="#%E9%96%8B%E9%97%9C%E8%B7%A8%E7%AB%99%E8%A1%A8%E5%96%AE%E6%AA%A2%E6%9F%A5" aria-hidden="true"><span class="octicon octicon-link"></span></a>開關跨站表單檢查</h4>
+
+<p>跨站表單預設是關閉的，欲要開啟，將下列設置為 True：</p>
+
+<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$jaji</span><span class="pl-k">-&gt;</span><span class="pl-smi">csrf</span> <span class="pl-k">=</span> <span class="pl-c1">true</span>;</span></pre></div>
+
+<p> </p>
+
+<h4>
+<a id="名稱設定" class="anchor" href="#%E5%90%8D%E7%A8%B1%E8%A8%AD%E5%AE%9A" aria-hidden="true"><span class="octicon octicon-link"></span></a>名稱設定</h4>
+
+<p>你應該要記得這些名稱，這樣你才能夠正確的進行跨站表單驗證，</p>
+
+<p>你可以自訂用來檢查的那些欄位名稱（<strong>下面這些都是預設值，當然你可以改變他們</strong>）：</p>
+
+<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-c">/** 儲存在 Cookie 中的麵包屑名稱 */</span></span>
+<span class="pl-s1"><span class="pl-smi">$jaji</span><span class="pl-k">-&gt;</span><span class="pl-smi">csrfCookieName</span> <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">'</span>jajjimento_token<span class="pl-pds">'</span></span>;</span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-c">/** 你的表單麵包屑欄位名稱（放在表單內的欄位） */</span></span>
+<span class="pl-s1"><span class="pl-smi">$jaji</span><span class="pl-k">-&gt;</span><span class="pl-smi">csrfFieldName</span>  <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">'</span>jajjimento_token<span class="pl-pds">'</span></span>;</span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-c">/** 儲存在 $_SESSION 中的的加密 Token 名稱 */</span></span>
+<span class="pl-s1"><span class="pl-smi">$jaji</span><span class="pl-k">-&gt;</span><span class="pl-smi">csrfName</span>       <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">'</span>jajjimentoToken<span class="pl-pds">'</span></span>;</span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-c">/** 放置麵包屑的自訂標頭名稱 */</span></span>
+<span class="pl-s1"><span class="pl-smi">$jaji</span><span class="pl-k">-&gt;</span><span class="pl-smi">csrfHeaderName</span> <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">'</span>X-CSRF-TOKEN<span class="pl-pds">'</span></span>;</span></pre></div>
+
+<p> </p>
+
+<h4>
+<a id="取得麵包屑內容" class="anchor" href="#%E5%8F%96%E5%BE%97%E9%BA%B5%E5%8C%85%E5%B1%91%E5%85%A7%E5%AE%B9" aria-hidden="true"><span class="octicon octicon-link"></span></a>取得麵包屑內容</h4>
+
+<p>透過「名稱設定」的地方，你可以很輕易透過那些變數，取得欄位名稱，</p>
+
+<p>倘若你要取得<strong>麵包屑內容</strong>，則可以透過下列函式。</p>
+
+<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$jaji</span><span class="pl-k">-&gt;</span>getCrumbValue();</span></pre></div>
+
+<p> </p>
+
+<h4>
+<a id="插入驗證欄位" class="anchor" href="#%E6%8F%92%E5%85%A5%E9%A9%97%E8%AD%89%E6%AC%84%E4%BD%8D" aria-hidden="true"><span class="octicon octicon-link"></span></a>插入驗證欄位</h4>
+
+<p>為了縮短你的困擾，用下列方式可以直接將一個隱藏欄位插入你的表單。</p>
+
+<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-smi">$jaji</span><span class="pl-k">-&gt;</span>insertCrumb();</span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-c">/** 例如 */</span></span>
+<span class="pl-s1"><span class="pl-k">&lt;</span><span class="pl-c1">form</span><span class="pl-k">&gt;</span></span>
+<span class="pl-s1">    <span class="pl-k">&lt;</span>?<span class="pl-k">=</span> <span class="pl-smi">$jaji</span><span class="pl-k">-&gt;</span>insertCrumb(); </span><span class="pl-pse"><span class="pl-s1">?</span>&gt;</span>
+&lt;/<span class="pl-ent">form</span>&gt;</pre></div>
+
+<p> </p>
+
+<h4>
+<a id="關於-xhrajax與標頭" class="anchor" href="#%E9%97%9C%E6%96%BC-xhrajax%E8%88%87%E6%A8%99%E9%A0%AD" aria-hidden="true"><span class="octicon octicon-link"></span></a>關於 XHR（AJAX）與標頭</h4>
+
+<p>每次都要在送出資料時，特地為麵包屑新增一個欄位太麻煩了（當然你也可以這樣做。），</p>
+
+<p>我們會建議你直接將麵包屑設置在全域請求標頭中，</p>
+
+<p>別忘記，<strong>如果你在上方教學更改了他們的名稱，請記得也更改你 JavaScript 中的名稱</strong>。</p>
+
+<p>假設 jQuery 和一個 $.Cookie 插件：</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-c">/** AJAX 全域設定，如此一來你就不需要替每一個 AJAX 都手動設置標頭 */</span>
+$.<span class="pl-en">ajaxSetup</span>(
+{
+    <span class="pl-en">beforeSend</span><span class="pl-k">:</span> <span class="pl-k">function</span>(<span class="pl-smi">xhr</span>)
+    {
+        <span class="pl-c">/** 設置一個名為 "X-CSRF-TOKEN" 的標頭，而內容是來自名為 "jajjimento_token" 的 Cookie */</span>
+        <span class="pl-smi">xhr</span>.<span class="pl-c1">setRequestHeader</span>(<span class="pl-s"><span class="pl-pds">"</span>X-CSRF-TOKEN<span class="pl-pds">"</span></span>, $.<span class="pl-c1">cookie</span>(<span class="pl-s"><span class="pl-pds">"</span>jajjimento_token<span class="pl-pds">"</span></span>));
+    }
+});</pre></div>
 
 <p> </p>
 
