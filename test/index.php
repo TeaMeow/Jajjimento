@@ -121,7 +121,7 @@ if(isset($_POST['username']))
   <p>URL <strong>required, type: url</strong></p>
   <input type="text" name="url">
   <p><button>Submit</button></p>
-  <?= $jaji->insertCrumb(); ?>
+  <?= $jaji->insertCrumb(['ng-model' => 'hello']); ?>
 </form>
 
 <?php } ?>
