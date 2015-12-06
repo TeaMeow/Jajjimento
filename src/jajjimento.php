@@ -991,9 +991,16 @@ class jajjimento
     
     function validateDate()
     {
-        $date = DateTime::createFromFormat($this->dateFormat, $this->field);
+        $passed = true;
         
-        if(!$date && $date->format($this->dateDormat) == $date)
+        foreach((array) $this->dateFormat as $dateFormat)
+        {
+            $date = DateTime::createFromFormat($dateFormat, $this->field);
+            
+            $passed = ($date && $date->format($this->dateDormat) == $date);
+        }
+            
+        if(!$passed)
             return $this->error('Date format is not right or there\'s no this day.');
         
         return true;
