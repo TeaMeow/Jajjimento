@@ -12,164 +12,177 @@
 
 # Jajjimento
 
-Jajjimento（ジャッジメント）中文涵意是風紀委員，這是用來驗證表單的 PHP 類別，
+[**這份說明的原文是：正體中文，你可以在這裡觀看這份文件的中文版本。**](中文說明.md)
 
-用法簡單，你甚至可以先儲存設定，假若要重複使用該規則，只需要幾條指令。
+**Any pull request about to fix the english translation of this document are welcomed ; )**
 
-和以往的版本不同，這次比較偏向物件導向方式，且新增了跨站表單檢查功能。
+Jajjimento (ジャッジメント) means judgement, this is a form validation class based on PHP,
 
-&nbsp;
+It's dead simple to use, you can even save your rules and use it later with few lines only,
 
-## 特色
-
-1. 可以儲存規則供未來重複使用。
-
-2. 簡單明瞭。
-
-3. 可以檢查陣列，或是直接檢查變數。
-
-4. 更具有意義的函式名稱卻又簡短。 
-
-5. 支援艾拉。
-
-6. 跨站表單 (CSRF) 檢查。
+the big difference between the previous version is OOP, and anti-CSRF is now supported.
 
 &nbsp;
 
-## 索引
+## Features
 
-1. [舉例](#舉例)
+1. You can save the rules and use it in the futrue.
 
-2. [設置來源 或 採用預先規則](#設置來源-或-採用預先規則)
+2. Easy and simple.
 
-  * [來源模式](#來源模式)
-  * [手動模式](#手動模式)
-  * [採用預先規則](#採用預先規則)
+3. Can validate an array, or just a variable.
 
-3. [設置種類](#設置種類)
+4. Semantic function names with less letters.
 
-  * [`min()` 和 `max()` 的用法](#min-和-max-的用法)
-  * [`dateFormat()` 的用法](#dateformat-的用法)
-  * [`inside()` 的用法](#inside-的用法)
-  * [`urlNot()` 的用法](#urlnot-的用法)
-  * [`target()` 的用法](#target-的用法)
+5. Aira supported.
 
-4. [設置附加功能](#設置附加功能)
-
-  * [`required()` 或 `req()` 的用法](#required-或-req-的用法)
-  * [`format()` 的用法](#format-的用法)
-  * [`trim()` 的用法](#trim-的用法)
-
-5. [驗證](#驗證)
-
-6. [取得驗證後的資料](#取得驗證後的資料)
-
-7. [儲存成預先規則](#儲存成預先規則)
-
-8. [跨站表單驗證（可選）](#跨站表單驗證可選)
-
-  * [原理](#原理)
-  * [必須需求](#必須需求])
-  * [開關跨站表單檢查](#開關跨站表單檢查)
-  * [名稱設定](#名稱設定)
-  * [取得麵包屑內容](#取得麵包屑內容)
-  * [插入驗證欄位](#插入驗證欄位)
-  * [關於 XHR（AJAX）與標頭](#關於-xhrajax與標頭)
-
-9. [當「艾拉」存在的時候](#當艾拉存在的時候)
+6. Anti-CSRF.
 
 &nbsp;
 
-## 舉例
+## Index
 
-這次的舉例，採用的是多數的情況，你可能會想檢查你接收的 $_POST 表單，你就應該這樣做：
+1. [Example](#example)
+
+2. [Set the source or load the rules](#set-the-source-or-load-the-rules)
+
+  * [Source mode](#source-mode)
+  * [Manual mode](#manual-mode)
+  * [Load the rules](#load-the-rules)
+
+3. [Set type](#set-type)
+
+  * [`min()` and `max()`](#min-and-max)
+  * [`dateFormat()`](#dateformat)
+  * [`inside()`](#inside)
+  * [`urlNot()`](#urlnot)
+  * [`target()`](#target)
+  * [Shorthands](#Shorthands)
+
+4. [Set extra options](#set-extra-options)
+
+  * [`required()` and `req()`](#required-and-req)
+  * [`format()`](#format)
+  * [`trim()`](#trim)
+
+5. [Validate](#validate)
+
+6. [Get the data after validated](#get-the-data-after-validated)
+
+7. [Save the rules](#save-the-rules)
+
+8. [Anti-CSRF (Optional)](#anti-csrf-optional)
+
+  * [How it works](#how-it-works)
+  * [Requirement](#requirement)
+  * [Enable the anti-CSRF](#enable-the-anti-csrf)
+  * [Cutomize the names](#cutomize-the-names)
+  * [Get the value of the crumb](#get-the-value-of-the-crumb)
+  * [Insert a hidden field](#insert-a-hidden-field)
+  * [About XHR (AJAX) and the header](#about-xhr-ajax-and-the-header)
+
+9. [When Aira does exist](#when-aira-does-exist)
+
+&nbsp;
+
+## Example
+
+Many people would face with thier $_POST forms, 
+
+and here's how you deal with it with Jajjimento:
 
 ```php
-/** 設定要檢查的來源為 $_POST 陣列 */
+/** Set $_POST as the source */
 $jaji->source($_POST)
 
-     /** 稍後會提及如何設定規則 */
+     /** We will teach you how to set a rule later */
      ->add('username')->type('length')->min(3)->max(16)->required()
      
-     /** 你也可以用簡寫 */
+     /** And shorhands are allowed :D */
      ->add('username')->length(3, 16)->req()
 
-     /** 一旦設定都好了，接下來就該檢查了！ */
+     /** Let's rock'n roll once you done all the settings */
      ->check();
 ```
 
 &nbsp;
 
-## 設置來源 或 採用預先規則
+## Set the source or load the rules
 
-在風紀委員中，你有兩種方式可以選擇，讀取預先規則或採用來源模式。
+You have two choices between set the source or load the rules.
 
-而來源模式分成下列兩種：
+And here's two way to set the source:
 
-* 來源 － 可以是 `$_POST` 或 `$_GET`，甚至是一個*陣列*。
-* 手動 － 當你的來源不固定，或者來源是一個變數而非陣列，就應該採用手動。
+* Source mode － It can be a `$_POST` or `$_GET`, and even an *array*。
+* Manual mode － You should use manual mode when your source is a variable not an array.
 
 &nbsp;
 
-#### 來源模式
+#### Source mode
 
-若你要檢查一個陣列中的資料，你就應該用 `source()` 啟用來源模式。
+You should use `source()` to enable the source mode if you are going to validate an array.
 
-在這裡以檢查一個 $_POST 表單為例：
+Here's a example about validate a $_POST array.
 
 ```php
 $jaji->source($_POST)
-     ->add('欄位名稱')   // 假設欄位名稱是 username，那麼你就會檢查 $_POST['username']。
+     ->add('Field Name')   // We will validate $_POST['username'] if the field name is "username".
 ```
 
 &nbsp;
 
-#### 手動模式
+#### Manual mode
 
-今天如果你並沒有陣列要檢查，而是想直接檢查一個變數，
+If you want to validate a variable not an array,
 
-**你則不需要設置 `source()` 而是應該直接進行新增規則的動作。**
+**You won't need to use `source()`, just add the rules.**
 
 ```php
-$jaji->add($Test)   // 在這個情況，$Test 會直接成為來源，該變數的內容會被檢查。
+$jaji->add($Test)   // In this situation, $Test became the target we will vaildate.
 ```
 
 &nbsp;
 
-#### 採用預先規則
+#### Load the rules
 
-你可以利用 `loadCheck()` 直接套用一個你先前儲存的規則並直接檢查，稍後會提及如何儲存一個規則。
+You can use `loadCheck()` to apply the rules and it will process the validation directly, 
+
+we will teach you how to save the rules later.
 
 ```php
 $jaji->source($_POST)
-     ->loadCheck($rule)   // 接下來會套用 $Rule 內所含有的規則並檢查。
+     ->loadCheck($rule)   // And it will apply the rules from $Rule and process the validation.
 ```
 
 &nbsp;
 
-## 設置種類
+## Set type
 
-透過 `type()` 來設定一個規則要檢查的種類，如果你嫌這種用法太長，**我們稍後會提及縮寫**，下列是目前可用的種類:
+Use `type()` to set the type of the rule, 
 
-| 種類英文   |   簡短    |        相關函式      |                                    種類說明                                |
-| ---------- | --------- | -------------------- | -------------------------------------------------------------------------- |
-| length     | 長度      |  `min()`, `max()`    | 字串長度；字串必須短於 `max()`，也至少長於 `min()` 所設定的值。            |
-| range      | 範圍      |  `min()`, `max()`    | 數字範圍；數字必須小於 `max()`，也至少大於 `min()` 所設定的值。            |
-| date       | 日期      |  `dateFormat()`      | 日期格式；日期必須是 `dateFormat()` 所設定的格式，例如 `YYYY-MM-DD`。      |
-| in         | 清單      |  `inside()`          | 是否存在；這個值必須在 `inside()` 所設定的陣列內。                         |
-| email      | 電郵      |                      | 電子信箱；內容必須是符合電子信箱格式。                                     |
-| gender     | 性別      |                      | 性別種類；性別必須是 f(emale) 或 m(ale) 或 o(ther)。                       |
-| ip         | IP        |                      | IP 地址 ；值必須符合 IPv4 或是 IPv6 的格式。                               |
-| ipv4       | IPv4      |                      | IP 地址 ；值必須符合 IPv4 格式。                                           |
-| ipv6       | IPv6      |                      | IP 地址 ；值必須符合 IPv6 格式。                                           |
-| url        | 網址      |  `urlNot()`          | 網址    ；內容必須是符合一般網址格式，用 `urlNot()` 來新增不允許網址開頭。 |
-| equals     | 等於      |  `target()`          | 相同內容；內容必須與 `target()` 的內容相同。                               |
+if you think it's too long for you to handle (Yep.), **you can use shorthands**.
+
+And here's the types that you can set with:
+
+|    Name    |     Depend with      |                                               Description                                                  |
+| ---------- | -------------------- | ---------------------------------------------------------------------------------------------------------- |
+| length     |  `min()`, `max()`    | String Length; The length of the string must shorter than `max()` and longer than `min()` .                |
+| range      |  `min()`, `max()`    | Number Range; The number must smaller than `max()` and bigger than `min()`.                             |
+| date       |  `dateFormat()`      | Date Format; The date format must same as the format where you setted by `dateFormat()`. ex: `YYYY-MM-DD`. |
+| in         |  `inside()`          | Is in; The value must in the array which you setted by `inside()`.                                         |
+| email      |                      | Email; It must be an valid email address.                                                                  |
+| gender     |                      | Gender; Gender must be one of the f(emale) or m(ale) or o(ther).                                           |
+| ip         |                      | All IP; It must be a valid IPv4 or IPv6 address.                                                           |
+| ipv4       |                      | IPv4; It must be a valid IPv4 address.                                                                     |
+| ipv6       |                      | IPv6; It must be a valid IPv6 address.                                                                     |
+| url        |  `urlNot()`          | Ur；It must be a url address and use `urlNot()` too add the urls which you don't allow.                    |
+| equals     |  `target()`          | Equals; Content must be same as the content of the `target()`.                                             |
 
 &nbsp;
 
-#### `min()` 和 `max()` 的用法
+#### `min()` and `max()`
 
-長度或數字必須大於 `min()` ，且小於或短於 `max()` 所設定的值。
+The length or the number must longer or bigger than `min()` and shorter or smaller than `max()`.
 
 ```php
 ->add('username')->type('length')->min(3)->max(6)
@@ -177,26 +190,26 @@ $jaji->source($_POST)
 
 &nbsp;
 
-#### `dateFormat()` 的用法
+#### `dateFormat()`
 
-`dateFormat()` 用來設定什麼日期格式可以被接受，
+`dateFormat()` is the fucntion that you can set the date formats you allowed,
 
-可以是單一個格式，或是一整個陣列，日期格式為 [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601)，
+It can be a single one, or you can pass an array with many formats in it, the format is following [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601),
 
-簡單說就是你在 PHP 中常見的「YYYY-mm-dd」或「dd/mm/YYYY」之類。
+In a nutshell, just something like 'YYYY-mm-dd' or 'dd/mm/YYYY'.
 
 ```php
 ->add('username')->type('date')->dateFormat('YYYY-mm-dd')
 
-/** 或是 */
+/** Or */
 ->add('birthday')->type('date')->dateFormat(['YYYY-mm-dd', 'mm/dd/YYYY'])
 ```
 
 &nbsp;
 
-#### `inside()` 的用法
+#### `inside()`
 
-必須在 `inside()` 所指定陣列中找的到這個值。
+The value must in the array which we setted by `inside()`.
 
 ```php
 ->add('options')->type('in')->inside(['A', 'B', 'C', 'D'])
@@ -204,60 +217,66 @@ $jaji->source($_POST)
 
 &nbsp;
 
-#### `urlNot()` 的用法
+#### `urlNot()`
 
-網址不可以是以什麼開頭的，例如 `http` 或 `https`，設定可以是單一個，或是陣列。
+Use the function to set those url you don't allow. 
+
+ex: `http` or `https`, it can be a string or an array with strings.
 
 ```php
 ->add('url')->type('url')->urlNot('ftp')
 
-/** 或是 */
+/** Or */
 ->add('url')->type('url')->urlNot(['http', 'https'])
 
-/** 你也可以 */
+/** Even */
 ->add('url')->type('url')->urlNot(['http://www.google.com/', 'http://www.yahoo.com/'])
 ```
 
 &nbsp;
 
-#### `target()` 的用法
+#### `target()`
 
-必須在 `target()` 中的內容一樣。需要注意的是：
+The value must same as the content which you setted by `target()`, and you should notice that:
 
-**無論是來源或是手動模式中，`target()` 帶入的是欄位名稱，而不是變數。**
+**No matter you're in the source mode or manual mode,**
 
-**但是如果你帶入一個變數，則將第二個參數設為 False 。**
+**you should pass an field name to `target()` instead of a variable.**
+
+**But if you want to pass a variable, you can just set the SECOND paramemter as false.**
 
 ```php
 ->add('passwordConfirm')->type('equals')->target('password')
 
-/** 倘若你要帶入一個變數，將後面設為 False */
+/** If you are going to pass a variable, set the second paramemter as false */
 ->add('passwordConfirm')->type('equals')->target($OriginalPassword, false)
 ```
 
 &nbsp;
 
-### 設置種類的簡寫
+### Shorthands
 
-在你使用簡寫的時候，可能會發現有些函式與 PHP 內建的重複，但這是不會發生問題的。
+You might have noticed that some function names are the same as the php built-in functions,
 
-| 種類英文   |   簡短    |            簡寫            | 
-| ---------- | --------- | -------------------------- | 
-| length     | 長度      |  `length(min, max)`        |
-| range      | 範圍      |  `range(min, max)`         |
-| date       | 日期      |  `date()`                  |
-| in         | 清單      |  `inside(list)`            |
-| email      | 電郵      |  `email()`                 | 
-| gender     | 性別      |  `gender()`                | 
-| ip         | IP        |  `ip()`                    | 
-| ipv4       | IPv4      |  `ipv4()`                  |
-| ipv6       | IPv6      |  `ipv6()`                  | 
-| url        | 網址      |  `url(urlNot)`             |
-| equals     | 相同      |  `equals(target, isField)` |
+but it's alright, we have already avoided that problem.
+
+|    Name    |          Shorhand         | 
+| ---------- | ------------------------- | 
+| length     | `length(min, max)`        |
+| range      | `range(min, max)`         |
+| date       | `date()`                  |
+| in         | `inside(list)`            |
+| email      | `email()`                 | 
+| gender     | `gender()`                | 
+| ip         | `ip()`                    | 
+| ipv4       | `ipv4()`                  |
+| ipv6       | `ipv6()`                  | 
+| url        | `url(urlNot)`             |
+| equals     | `equals(target, isField)` |
 
 &nbsp;
 
-當你使用簡寫，`type()` 是不必要的。
+`type()` is not required when you using shorhands.
 
 ```php
 ->add('username')->length(3, 12)
@@ -271,41 +290,43 @@ $jaji->source($_POST)
 
 &nbsp;
 
-## 設置附加功能
+## Set extra options
 
-附加功能例如「必填項目」，或者是限制內容的格式，例如:「a-Z0-9」，
+Some extra options like "required", or the format of the string like "A-Z0-9",
 
-有的附加功能支援縮寫，而所有的的附加功能都可以用在縮寫的種類上。
+and some of them got shorhand either, all of the extra options can be used on the shorthanded types.
 
-|     函式     |      簡短     |   簡寫    | 
-| ------------ | ------------- | --------- | 
-| `required()` | 必填          |  `req()`  |
-| `format()`   | 格式          |           |
-| `trim()`     | 清除字尾空白  |           |     
+|   Function   |                  Description                   | Shorthand | 
+| ------------ | ---------------------------------------------- | --------- | 
+| `required()` | Requird                                        |  `req()`  |
+| `format()`   | Format with RegEx                              |           |
+| `trim()`     | Remove the whitespace at the end of the string |           |     
 
 &nbsp;
 
-#### `required()` 或 `req()` 的用法
+#### `required()` and `req()`
 
-這會讓某個欄位成為必填項目，如果**內容只有空白**，或是**完全沒內容**，就會無法通過，
+It will make the field become required,
+
+and it won't be passed if the field has **empty string only** or **totally nothing**.
  
-兩者都是相同的東西，僅是一個縮寫而已。
+Both of the functions are the same thing.
 
 &nbsp;
 
 ```php
-/** 可以用在縮寫種類上 */
+/** Can use it with the shorthanded types */
 ->add('age')->range(1, 99)->req()
 
-/** 如果你想要讓他完整一點也可以 */
+/** Or you hate shorthands */
 ->add('url')->type('url')->required()
 ```
 
 &nbsp;
 
-#### `format()` 的用法
+#### `format()`
 
-這會限制內容必須是什麼格式，這個的用法為 [正規表達式](https://en.wikipedia.org/wiki/Regular_expression)。
+It will limit the format of the string, it uses [RegEx](https://en.wikipedia.org/wiki/Regular_expression) to check.
 
 ```php
 ->add('username')->length(1, 12)->format('a-Z0-9')
@@ -313,9 +334,9 @@ $jaji->source($_POST)
 
 &nbsp;
 
-#### `trim()` 的用法
+#### `trim()`
 
-移除字尾最後的空白。
+Remove the whitespace at the end of the string.
 
 ```php
 ->add('address')->length(7, 60)->trim()
@@ -323,47 +344,47 @@ $jaji->source($_POST)
 
 &nbsp;
 
-## 驗證
+## Validate
 
-一旦你完成了先前的設置，就可以透過 `check()` 或 `loadCheck()` 來進行驗證手續。
+You can process the validation with `check()` or `loadCheck()` once you done all the settings.
 
 ```php
 $jaji->check();
 
-/** 如果你要讀取設定並驗證的話則是這樣 */
+/** Or you want to load the rules which you setted before */
 $jaji->loadCheck($myRule);
 ```
 
 &nbsp;
 
-## 取得驗證後的資料
+## Get the data after validated
 
-驗證後的資料可能會比較安全一點_（我是說，你網站最終被駭入，還是不應該找我，對吧？）_
+It might be more safer to use the data which we validated (I mean, you can't blame me if you still get hacked, right? )
 
-你可以透過 `safe` 來取得一個被驗證後的資料。
+You can use `safe` to get the data which we validated.
 
-**請注意：如果這次的驗證是錯誤的，那麼你將會取得到一個空白的陣列，**
+**HEY: You will get an empty array if the validation was not passed,**
 
-**最好的方法是在驗證錯誤的時候就中止繼續。**
+**the best way is stop it when the validation was not passed.**
 
 ```php
-/** 先驗證 */
+/** Validate it first */
 $jaji->check();
 
-/** 然後把這個拿來做後續資料處理 */
+/** And you can use this instead of the original array */
 $safe = $jaji->safe;
 
-/** 像這樣 */
+/** Like this */
 foobar($safe['username']);
 ```
 
 &nbsp;
 
-## 儲存成預先規則
+## Save the rules
 
-一旦你完成了設置，你可以選擇不要檢查（也就是不要驗證），而是使用下列方式儲存在一個變數中。
+Once you done the settings, you can choose to save them instead of validaing them.
 
-**如果你決定要儲存成規則，那麼就請不要指定來源，因為那是無用的。**
+**Don't set the source becuase that's useless if you decided to save them.**
 
 ```php
 $myRule = $jaji->save()
@@ -371,7 +392,7 @@ $myRule = $jaji->save()
 
 &nbsp;
 
-如果你不是很清楚，我們從頭來過，最後採用儲存的方式。
+If you still don't understand, let's start from the beginning and save it at the end.
 
 ```php
 $myRule = $jaji->add('username')->type('length')->min(3)->max(32)->required()->format('a-Z0-9')
@@ -382,48 +403,46 @@ $myRule = $jaji->add('username')->type('length')->min(3)->max(32)->required()->f
 
 &nbsp;
 
-接著 `$myRule` 內就會有一串你剛所儲存的規則，若要使用，請在下次這樣使用：
+And there will be an array with rules in `$myRule`, if you want to use them, do this next time:
 
 ```php
 $jaji->source($_POST)
      ->loadCheck($myRule);
 ```
 
-如此一來，就會以剛才的規則去檢查 $_POST。
+So you can process the validation with those rules which you saved.
 
 &nbsp;
 
-## 跨站表單驗證（可選）
+## Anti-CSRF (Optional)
 
-跨站表單通常是被建議開啟的，無論做什麼，
+So, we highly recommend that you should enable this feature no matter what,
 
-**風紀委員都建議你不要將這個功能關閉，直至你有另一個跨站表單的檢查功能。**
-
-&nbsp;
-
-#### 原理
-
-風紀委員對跨站表單驗證的處理方式是，先在你第一次進入這個網站的時候，
-
-**生成一個隨機字串**，如此一來只有那個使用者知道該字串，
-
-接下來的表單欄位或是請求標頭，都至少需要含有這個字串，否則風紀委員都會拒絕接受。
+**You shouldn't disable this unless you have another library to handle the csrf attack.**
 
 &nbsp;
 
-#### 必須需求
+#### How it works
 
-你的表單或是來源標頭，**至少要有一個地方含有用以檢查是否正常送出的「麵包屑（Crumb）」**，
+A token will be generated when you entered the website,
 
-你可以**透過稍候提供的方式來將麵包屑包含在你的表單中**，
-
-或是**放置在請求標頭**，否則風紀委員都會**拒絕接受**。
+and every forms and headers should include the token, if not, Jajjimento will refuse all the request.
 
 &nbsp;
 
-#### 開關跨站表單檢查
+#### Requirement
 
-跨站表單預設是關閉的，欲要開啟，將下列設置為 True：
+**You can choose to put the token in the form or the header, but one of them at least**,
+
+You can use the function which we will teach you later **to put the token in your forms**,
+
+or **put it in the header**, **ny request will be refused if you don't do this**.
+
+&nbsp;
+
+#### Enable the anti-CSRF
+
+Anti-CSRF is disabled by default, to enable it, set this as true:
 
 ```php
 $jaji->csrf = true;
@@ -431,33 +450,31 @@ $jaji->csrf = true;
 
 &nbsp;
 
-#### 名稱設定
+#### Cutomize the names
 
-你應該要記得這些名稱，這樣你才能夠正確的進行跨站表單驗證，
+You should remember these names, so you can know how to use it later,
 
-你可以自訂用來檢查的那些欄位名稱（**下面這些都是預設值，當然你可以改變他們**）：
+you can customize the names (**These are default values**):
 
 ```php
-/** 儲存在 Cookie 中的麵包屑名稱 */
+/** The name of the cookie which we stored the token */
 $jaji->csrfCookieName = 'jajjimento_token';
 
-/** 你的表單麵包屑欄位名稱（放在表單內的欄位） */
+/** The field name of the token (the field which you should put in the form) */
 $jaji->csrfFieldName  = 'jajjimento_token';
 
-/** 儲存在 $_SESSION 中的的加密 Token 名稱 */
+/** The name of the $_SESSION which we stored the token */
 $jaji->csrfName       = 'jajjimentoToken';
 
-/** 放置麵包屑的自訂標頭名稱 */
+/** The name of the header which we used to check the token with */
 $jaji->csrfHeaderName = 'X-CSRF-TOKEN';
 ```
 
 &nbsp;
 
-#### 取得麵包屑內容
+#### Get the value of the crumb
 
-透過「名稱設定」的地方，你可以很輕易透過那些變數，取得欄位名稱，
-
-倘若你要取得**麵包屑內容**，則可以透過下列函式。
+You can do this if you want to **get the token**.
 
 ```php
 $jaji->getCrumbValue();
@@ -465,41 +482,42 @@ $jaji->getCrumbValue();
 
 &nbsp;
 
-#### 插入驗證欄位
+#### Insert a hidden field
 
-為了縮短你的困擾，用下列方式可以直接將一個隱藏欄位插入你的表單。
+To not waste your time, we added the function which can insert a hidden field in your forms automanticlly.
 
 ```php
 $jaji->insertCrumb();
 
-/** 應用在表單上 */
+/** In your form */
 <form>
     <?= $jaji->insertCrumb(); ?>
     
-    /** 如果你有特殊的標籤要加入，可以傳入一個陣列 */
+    /** Or you have custom attributes */
     <?= $jaji->insertCrumb(['ng-model' => 'misaka']); ?>
 </form>
 ```
 
 &nbsp;
 
-#### 關於 XHR（AJAX）與標頭
+#### About XHR (AJAX) and the header
 
-每次都要在送出資料時，特地為麵包屑新增一個欄位太麻煩了（當然你也可以這樣做。），
+That might makes you lazy to add the token to the XHR request everytime (Or you are not lazy),
 
-我們會建議你直接將麵包屑設置在全域請求標頭中，
+We recommend you to set the token in the global header,
 
-別忘記，**如果你在上方教學更改了他們的名稱，請記得也更改你 JavaScript 中的名稱**。
+don't forget to **change their name in the JavaScript if you changed their name in PHP**.
 
-假設 jQuery 和一個 $.Cookie 插件：
+For this example, we will use jQuery and a $.Cookie plugin:
 
 ```javascript
-/** AJAX 全域設定，如此一來你就不需要替每一個 AJAX 都手動設置標頭 */
+/** Set them in global setting so you won't need to set the header with each AJAX */
 $.ajaxSetup(
 {
     beforeSend: function(xhr)
     {
-        /** 設置一個名為 "X-CSRF-TOKEN" 的標頭，而內容是來自名為 "jajjimento_token" 的 Cookie */
+        /** Name a header with "X-CSRF-TOKEN", **/
+        /** and the content is from the cookie which named "jajjimento_token" */
         xhr.setRequestHeader("X-CSRF-TOKEN", $.cookie("jajjimento_token"));
     }
 });
@@ -508,16 +526,16 @@ $.ajaxSetup(
 &nbsp;
 
 
-## 當「艾拉」存在的時候
+## When Aira does exist]
 
-如果你有 [艾拉](http://github.com/TeaMeow/Aira) 來協助你處理錯誤，
+If you have [Aira](http://github.com/TeaMeow/Aira) to handler your errors,
 
-那麼你應該將此這為 True（預設為 False。）。
+You can set this as true (false by default).
 
 ```php
 $jaji->hasAira = true;
 ```
 
-接下來， `aira::add('INCORRECT_FORM')` 將會在驗證失敗時被呼叫。
+and, `aira::add('INCORRECT_FORM')` will be called once the validation failed.
 
 
