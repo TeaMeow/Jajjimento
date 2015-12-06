@@ -815,18 +815,26 @@ class jajjimento
         return $_SESSION[$this->csrfName];
     }
     
-    
+
     
     
     /**
      * Insert Crumb
      * 
+     * @param array|null $attrs   Key as the attr name, value as the attr value.
+     * 
      * @return string
      */
     
-    function insertCrumb()
+    function insertCrumb($attrs=null)
     {
-        return '<input type="hidden" name="' . $this->csrfFieldName . '" value="' . $_SESSION[$this->csrfName] . '">';
+        $compiledAttrs = '';
+        
+        if($attrs != null)
+            foreach($attrs as $name => $value)
+                $compiledAttrs .= ' ' . $name . '="' . $value . '"';
+        
+        return '<input type="hidden" name="' . $this->csrfFieldName . '" value="' . $_SESSION[$this->csrfName] . '"' . $compiledAttrs . '>';
     }
     
     
