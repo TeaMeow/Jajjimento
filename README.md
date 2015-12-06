@@ -506,7 +506,7 @@ That might makes you lazy to add the token to the XHR request everytime (Or you 
 
 We recommend you to set the token in the global header,
 
-don't forget to **change their name in the JavaScript if you changed their name in PHP**.
+don't forget to **change their name in JavaScript if you changed their name in PHP**.
 
 For this example, we will use jQuery and a $.Cookie plugin:
 
@@ -526,7 +526,7 @@ $.ajaxSetup(
 &nbsp;
 
 
-## When Aira does exist]
+## When Aira does exist
 
 If you have [Aira](http://github.com/TeaMeow/Aira) to handler your errors,
 
