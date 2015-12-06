@@ -472,9 +472,12 @@ $jaji->getCrumbValue();
 ```php
 $jaji->insertCrumb();
 
-/** 例如 */
+/** 應用在表單上 */
 <form>
     <?= $jaji->insertCrumb(); ?>
+    
+    /** 如果你有特殊的標籤要加入，可以傳入一個陣列 */
+    <?= $jaji->insertCrumb(['ng-model' => 'misaka']); ?>
 </form>
 ```
 
