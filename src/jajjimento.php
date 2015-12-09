@@ -14,7 +14,7 @@
 
 session_start();
 
-class jajjimento
+class Jajjimento
 {
     /** 
      * Set this as true if Aira does exist, so Aira will be called once the validation not passed.
@@ -186,7 +186,7 @@ class jajjimento
      * 
      * @param string $variable   The field or the raw variable.
      * 
-     * @return jajjimento
+     * @return Jajjimento
      */
      
     function add($variable)
@@ -220,7 +220,7 @@ class jajjimento
      * 
      * @param string $type
      * 
-     * @return jajjimento
+     * @return Jajjimento
      */
     
     function _type($type)
@@ -238,7 +238,7 @@ class jajjimento
      * 
      * @param int $min
      * 
-     * @return jajjimento
+     * @return Jajjimento
      */
      
     function _min($min)
@@ -256,7 +256,7 @@ class jajjimento
      * 
      * @param int $max
      * 
-     * @return jajjimento
+     * @return Jajjimento
      */
      
     function _max($max)
@@ -272,7 +272,7 @@ class jajjimento
      * 
      * Set a rule as required for it's value.
      * 
-     * @return jajjimento
+     * @return Jajjimento
      */
     
     function _required()
@@ -290,7 +290,7 @@ class jajjimento
      * 
      * @param array|string $date
      * 
-     * @return jajjimento
+     * @return Jajjimento
      */
     
     function _dateFormat($date)
@@ -308,7 +308,7 @@ class jajjimento
      * 
      * @param array $list
      * 
-     * @return jajjimento
+     * @return Jajjimento
      */
     
     function _inside($list)
@@ -324,7 +324,7 @@ class jajjimento
      * 
      * Set the trim option as true for the last rule.
      * 
-     * @return jajjimento
+     * @return Jajjimento
      */
     
     function _trim()
@@ -342,7 +342,7 @@ class jajjimento
      * 
      * @param string $regex
      * 
-     * @return jajjimento
+     * @return Jajjimento
      */
     
     function _format($regex)
@@ -361,7 +361,7 @@ class jajjimento
      * @param string $target    The field name of the target which we want to compare, or just the raw variable.
      * @param bool   $isField   When this is true, we will compare with the field which the name is same as the $target, otherwise we compare with the target directly.
      * 
-     * @return jajjimento
+     * @return Jajjimento
      */
     
     function _target($target, $isField=true)
@@ -383,7 +383,7 @@ class jajjimento
      * 
      * Same as required.
      * 
-     * @return jajjimento
+     * @return Jajjimento
      */
      
     function _req()
@@ -402,7 +402,7 @@ class jajjimento
      * @param int $min   The minimun limit.
      * @param int $max   The maximun limit.
      * 
-     * @return jajjimento
+     * @return Jajjimento
      */
     
     function _length($min, $max)
@@ -423,7 +423,7 @@ class jajjimento
      * @param int $min   The minimun limit.
      * @param int $max   The maximun limit.
      * 
-     * @return jajjimento
+     * @return Jajjimento
      */
     
     function _range($min, $max)
@@ -445,7 +445,7 @@ class jajjimento
      * 
      * @param array|string $date   The date format.
      * 
-     * @return jajjimento
+     * @return Jajjimento
      */
     
     function _date($date)
@@ -464,7 +464,7 @@ class jajjimento
      * 
      * @param array $inside
      * 
-     * @return jajjimento
+     * @return Jajjimento
      */
     
     function _in($inside)
@@ -481,7 +481,7 @@ class jajjimento
      * 
      * Shorthands for type('email').
      * 
-     * @return jajjimento
+     * @return Jajjimento
      */
     
     function _email()
@@ -497,7 +497,7 @@ class jajjimento
      * 
      * Shorthands for type('gender').
      * 
-     * @return jajjimento
+     * @return Jajjimento
      */
     
     function _gender()
@@ -513,7 +513,7 @@ class jajjimento
      * 
      * Shorthands for type('ip').
      * 
-     * @return jajjimento
+     * @return Jajjimento
      */
     
     function _ip()
@@ -529,7 +529,7 @@ class jajjimento
      * 
      * Shorthands for type('ipv4').
      * 
-     * @return jajjimento
+     * @return Jajjimento
      */
     
     function _ipv4()
@@ -545,7 +545,7 @@ class jajjimento
      * 
      * Shorthands for type('ipv6').
      * 
-     * @return jajjimento
+     * @return Jajjimento
      */
     
     function _ipv6()
@@ -561,7 +561,7 @@ class jajjimento
      * 
      * Shorthands for type('url').
      * 
-     * @return jajjimento
+     * @return Jajjimento
      */
     
     function _url()
@@ -577,7 +577,7 @@ class jajjimento
      * 
      * Shorthands for type('equals')->target().
      * 
-     * @return jajjimento
+     * @return Jajjimento
      */
     
     function _equals($target, $isField=true)
@@ -722,7 +722,7 @@ class jajjimento
     /**
      * Process Csrf Protection
      * 
-     * @return jajjimento
+     * @return Jajjimento
      */
     
     function Csrf()
@@ -861,7 +861,7 @@ class jajjimento
      * 
      * Initialize the csrf token and the key.
      * 
-     * @return jajjimento
+     * @return Jajjimento
      */
      
     function initializeCsrf()
@@ -892,7 +892,7 @@ class jajjimento
      * 
      * Remove the whitespace at the end of the string.
      * 
-     * @return jajjimento
+     * @return Jajjimento
      */
     
     function validateTrim()
@@ -1196,7 +1196,7 @@ class jajjimento
      * 
      * @param array $rule   The rule which we want to explode.
      * 
-     * @return jajjimento
+     * @return Jajjimento
      */
     
     function setVariables($rule)
@@ -1226,7 +1226,7 @@ class jajjimento
     /**
      * Clean
      * 
-     * @return jajjimento
+     * @return Jajjimento
      */
     
     function clean()
@@ -1248,7 +1248,7 @@ class jajjimento
      * 
      * Turn the emprt string to null.
      * 
-     * @return jajjimento
+     * @return Jajjimento
      */
     
     function emptyToNull()
