@@ -146,7 +146,7 @@ class Jajjimento
     public function __call($name, $args)
     {
         $basicFunctions = ['type', 'min', 'max', 'required', 'format', 'trim', 'req', 'length', 'range', 'equals',
-                           'date', 'inside', 'email', 'gender', 'ip', 'ipv4', 'ipv6', 'url', 'urlNot', 'target'];
+                           'date', 'inside', 'email', 'gender', 'ip', 'ipv4', 'ipv6', 'url', 'urlNot', 'target', 'dateFormat'];
 
         if(in_array($name, $basicFunctions))
             return call_user_func_array(array($this, '_' . $name), $args);
@@ -1148,9 +1148,7 @@ class Jajjimento
 
     function validateFormat()
     {
-        preg_match($this->format, $this->field, $matches);
-
-        if(count($matches) < 2)
+        if(!preg_match($this->format, $this->field))
             return $this->error('The format was not correct.');
 
         return true;
