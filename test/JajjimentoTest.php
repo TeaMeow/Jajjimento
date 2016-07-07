@@ -60,7 +60,7 @@ class JajjimentoTest extends \PHPUnit_Framework_TestCase
                     ->add($this->data['email'])->type('email')->required()
                     ->add($this->data['gender'])->type('gender')->required()
                     ->add($this->data['option'])->type('in')->inside(['A', 'B', 'C'])->required()
-                    ->add($this->data['confirm'])->equals($this->data['password'])
+                    ->add($this->data['confirm'])->equals($this->data['password'], false)
                     ->add($this->data['age'])->type('range')->min(1)->max(99)->format('/^[0-9]*$/')->trim()->required()
                     ->add($this->data['ip'])->type('ip')->required()
                     ->add($this->data['ip'])->type('ipv4')->required()

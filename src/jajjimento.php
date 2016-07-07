@@ -1323,19 +1323,5 @@ class Jajjimento
         return ($this->hasAira) ? Aira::Add('INCORRECT_FORM')
                                 : $this;
     }
-
-
-    static function fill($fillWith, $data, $desiredData)
-    {
-        $keys = array_keys($data);
-
-        foreach($desiredData as $desiredKey)
-            if(in_array($desiredKey, $keys))
-                continue;
-            else
-                $output[$desiredKey] = $fillWith;
-
-        return $output;
-    }
 }
 ?>
