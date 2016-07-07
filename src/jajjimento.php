@@ -1,19 +1,24 @@
 <?php
 
 /**
-* Jajjimento Class
-*
-* @category  Tools
-* @package   Jajjimento
-* @author    Yami Odymel <yamiodymel@gmail.com>
-* @copyright Copyright (c) 2015
-* @license   https://en.wikipedia.org/wiki/MIT_License MIT License
-* @link      http://github.com/TeaMeow/Jajjimento
-* @version   1.0
-**/
+ * getallheaders
+ *
+ * http://stackoverflow.com/questions/13224615/get-the-http-headers-from-current-request-in-php
+ */
 
-//if(session_status() == PHP_SESSION_NONE)
-//    session_start();
+if(!function_exists('getallheaders'))
+{
+    function getallheaders()
+    {
+        $headers = '';
+
+        foreach ($_SERVER as $name => $value)
+            if(substr($name, 0, 5) == 'HTTP_')
+                $headers[str_replace(' ', '-', ucwords(strtolower(str_replace('_', ' ', substr($name, 5)))))] = $value;
+
+        return $headers;
+    }
+}
 
 class Jajjimento
 {
