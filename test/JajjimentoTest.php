@@ -29,7 +29,7 @@ class JajjimentoTest extends \PHPUnit_Framework_TestCase
                            'option'   => 'F',
                            'age'      => '0',
                            'ip'       => '1',
-                           'ipv6'     => '2',
+                           'ipv6'     => '2sdfsdf',
                            'url'      => '..',
                            'jajjimento_token' => 'wtf'];
         $this->maxData  = ['username' => 'y',
@@ -41,7 +41,7 @@ class JajjimentoTest extends \PHPUnit_Framework_TestCase
                            'option'   => 'F',
                            'age'      => '100',
                            'ip'       => '1',
-                           'ipv6'     => '2',
+                           'ipv6'     => '2sdfs',
                            'url'      => '..',
                            'jajjimento_token' => 'wtf'];
     }
