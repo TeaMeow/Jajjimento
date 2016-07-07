@@ -81,46 +81,6 @@ class Jajjimento
     private $source = false;
 
     /**
-     * The CSRF switch, set false when you don't want the csrf proection.
-     *
-     * @var bool
-     */
-
-    public $csrf = false;
-
-    /**
-     * The name of the hashed csrf token which we stored in the COOKIES.
-     *
-     * @var string
-     */
-
-    public $csrfCookieName = 'jajjimento_token';
-
-    /**
-     * The name of the csrf token field which you should passed though the form.
-     *
-     * @var string
-     */
-
-    public $csrfFieldName = 'jajjimento_token';
-
-    /**
-     * The name of the csrf token which we stored in the SESSIONS.
-     *
-     * @var string
-     */
-
-    public $csrfName  = 'jajjimentoToken';
-
-    /**
-     * The name of the csrf token header.
-     *
-     * @var string
-     */
-
-    public $csrfHeaderName = 'HTTP_X_CSRF';
-
-    /**
      * @var string      $field        Stores 'this round' rule informations.
      * @var string      $type         Stores 'this round' rule informations.
      * @var int|null    $min          Stores 'this round' rule informations.
@@ -161,8 +121,6 @@ class Jajjimento
 
 
     /**
-     * Source
-     *
      * Set a source here, and we will check it with our rules later.
      *
      * @param array $source   The array we which we want to check later.
@@ -184,8 +142,6 @@ class Jajjimento
 
 
     /**
-     * Add
-     *
      * Add a field or a raw variable to the list, and check it later.
      *
      * @param string $variable   The field or the raw variable.
@@ -218,8 +174,6 @@ class Jajjimento
 
 
     /**
-     * Type
-     *
      * Set the type of the last rule, such as 'length', 'range', 'date'.
      *
      * @param string $type
@@ -236,8 +190,6 @@ class Jajjimento
 
 
     /**
-     * Min
-     *
      * Set the minimum limit of the rule.
      *
      * @param int $min
@@ -254,8 +206,6 @@ class Jajjimento
 
 
     /**
-     * Max
-     *
      * Set the maximum limit of the rule.
      *
      * @param int $max
@@ -272,8 +222,6 @@ class Jajjimento
 
 
     /**
-     * Required
-     *
      * Set a rule as required for it's value.
      *
      * @return Jajjimento
@@ -288,8 +236,6 @@ class Jajjimento
 
 
     /**
-     * Date Format
-     *
      * Set the date formats which are allowed.
      *
      * @param array|string $date
@@ -306,8 +252,6 @@ class Jajjimento
 
 
     /**
-     * Inside
-     *
      * Set a list, and make sure the value is in this list or ggwp.
      *
      * @param array $list
@@ -324,8 +268,6 @@ class Jajjimento
 
 
     /**
-     * Trim
-     *
      * Set the trim option as true for the last rule.
      *
      * @return Jajjimento
@@ -340,8 +282,6 @@ class Jajjimento
 
 
     /**
-     * Format
-     *
      * Set the RegEx rule for the last rule.
      *
      * @param string $regex
@@ -358,8 +298,6 @@ class Jajjimento
 
 
     /**
-     * Target
-     *
      * Set the target, so we can validate the two fields were the same or not.
      *
      * @param string $target    The field name of the target which we want to compare, or just the raw variable.
@@ -383,8 +321,6 @@ class Jajjimento
     /***********************************************
 
     /**
-     * Req
-     *
      * Same as required.
      *
      * @return Jajjimento
@@ -399,8 +335,6 @@ class Jajjimento
 
 
     /**
-     * Length
-     *
      * Shorthands for type('length')->min()->max().
      *
      * @param int $min   The minimun limit.
@@ -420,8 +354,6 @@ class Jajjimento
 
 
     /**
-     * Range
-     *
      * Shorthands for type('range')->min()->max().
      *
      * @param int $min   The minimun limit.
@@ -441,8 +373,6 @@ class Jajjimento
 
 
     /**
-     * Date
-     *
      * Shorthands for type('date')->dateFormat().
      *
      * @see https://en.wikipedia.org/wiki/ISO_8601
@@ -462,8 +392,6 @@ class Jajjimento
 
 
     /**
-     * In
-     *
      * Shorthands for type('in')->inside().
      *
      * @param array $inside
@@ -481,8 +409,6 @@ class Jajjimento
 
 
     /**
-     * Email
-     *
      * Shorthands for type('email').
      *
      * @return Jajjimento
@@ -497,8 +423,7 @@ class Jajjimento
 
 
     /**
-     * Gender
-     *
+
      * Shorthands for type('gender').
      *
      * @return Jajjimento
@@ -513,8 +438,6 @@ class Jajjimento
 
 
     /**
-     * IP
-     *
      * Shorthands for type('ip').
      *
      * @return Jajjimento
@@ -529,8 +452,6 @@ class Jajjimento
 
 
     /**
-     * IPv4
-     *
      * Shorthands for type('ipv4').
      *
      * @return Jajjimento
@@ -545,8 +466,6 @@ class Jajjimento
 
 
     /**
-     * IPv6
-     *
      * Shorthands for type('ipv6').
      *
      * @return Jajjimento
@@ -561,8 +480,6 @@ class Jajjimento
 
 
     /**
-     * URL
-     *
      * Shorthands for type('url').
      *
      * @return Jajjimento
@@ -577,8 +494,6 @@ class Jajjimento
 
 
     /**
-     * Equals
-     *
      * Shorthands for type('equals')->target().
      *
      * @return Jajjimento
@@ -600,8 +515,6 @@ class Jajjimento
     /***********************************************
 
     /**
-     * Check
-     *
      * Here to start the validation.
      *
      * @return bool
@@ -609,10 +522,6 @@ class Jajjimento
 
     function check()
     {
-        /** Check the csrf token and make sure it's not manual mode */
-        if($this->csrf && $this->source)
-            $this->Csrf();
-
         foreach($this->rules as $rule)
         {
             /** Explode the variables first */
@@ -678,8 +587,6 @@ class Jajjimento
 
 
     /**
-     * Load Check
-     *
      * Load the rules and start a validation with those rules.
      *
      * @param array $rules   A jajjimento generated rules .
@@ -698,8 +605,6 @@ class Jajjimento
 
 
     /**
-     * Save
-     *
      * Return the rules.
      *
      * @retrun array
@@ -719,181 +624,11 @@ class Jajjimento
 
     /***********************************************
     /***********************************************
-    /****************** C S R F ********************
-    /***********************************************
-    /***********************************************
-
-    /**
-     * Process Csrf Protection
-     *
-     * @return Jajjimento
-     */
-
-    function Csrf()
-    {
-        /** Generate a new csfr token if there's no token generated */
-        if(!$this->hasCsrf())
-            $this->initializeCsrf();
-
-        if(!$this->csrfHeaderCheck() && !$this->csrfFieldCheck())
-            $this->error('Crumb error.');
-
-        return $this;
-    }
-
-
-
-
-    /**
-     * Csrf Header Check
-     *
-     * Check the csrf token is in the header and correct or not.
-     *
-     * @return bool
-     */
-
-    function csrfHeaderCheck()
-    {
-        $token = false;
-
-        /** Get the value of the custom header */
-        foreach(getallheaders() as $name => $value)
-            if($name == $this->csrfHeaderName)
-                $token = $value;
-
-        return $this->csrfValidate($token);
-    }
-
-
-
-
-    /**
-     * Csrf Field Check
-     *
-     * Check the csrf token is in the field and correct or not.
-     *
-     * @return bool
-     */
-
-    function csrfFieldCheck()
-    {
-        $token = isset($this->source[$this->csrfFieldName]) ? $this->source[$this->csrfFieldName] : null;
-
-        if($token === null)
-            return false;
-
-        return $this->csrfValidate($token);
-    }
-
-
-
-
-    /**
-     * Csrf Validate
-     *
-     * Compare two tokens were the same or not.
-     *
-     * @param string|false $token   The token which we got from the cilent side.
-     *
-     * @return bool
-     */
-
-    function csrfValidate($token=false)
-    {
-        if(!$token) return false;
-
-        return $token == $_SESSION[$this->csrfName];
-    }
-
-
-
-
-    /**
-     * Return Hashed Crumb
-     *
-     * @return string
-     */
-
-    function getCrumbValue()
-    {
-        return $_SESSION[$this->csrfName];
-    }
-
-
-
-
-    /**
-     * Insert Crumb
-     *
-     * @param array|null $attrs   Key as the attr name, value as the attr value.
-     *
-     * @return string
-     */
-
-    function insertCrumb($attrs=null)
-    {
-        $compiledAttrs = '';
-
-        if($attrs != null)
-            foreach($attrs as $name => $value)
-                $compiledAttrs .= ' ' . $name . '="' . $value . '"';
-
-        return '<input type="hidden" name="' . $this->csrfFieldName . '" value="' . $_SESSION[$this->csrfName] . '"' . $compiledAttrs . '>';
-    }
-
-
-
-
-    /**
-     * Has Csrf
-     *
-     * Returns true if we had already initialized the csrf protection thing.
-     *
-     * @return bool
-     */
-
-    function hasCsrf()
-    {
-        return isset($_SESSION[$this->csrfName]);
-    }
-
-
-
-
-    /**
-     * Initialize Csrf
-     *
-     * Initialize the csrf token and the key.
-     *
-     * @return Jajjimento
-     */
-
-    function initializeCsrf()
-    {
-        /** Generate a random string */
-        $token = md5(uniqid(mt_rand(), true));
-
-        /** Store the token into the session */
-        $_SESSION[$this->csrfName] = $token;
-
-        /** Store the hashed token into the cookie */
-        setcookie($this->csrfCookieName, $token, time() + (10 * 365 * 24 * 60 * 60), '', '', false, true);
-
-        return $this;
-    }
-
-
-
-
-    /***********************************************
-    /***********************************************
     /************ V A L I D A T I O N **************
     /***********************************************
     /***********************************************
 
     /**
-     * Validate Trim
-     *
      * Remove the whitespace at the end of the string.
      *
      * @return Jajjimento
@@ -915,8 +650,6 @@ class Jajjimento
 
 
     /**
-     * Validate Required
-     *
      * Check the value and it must not be empty because it's required.
      *
      * @return bool   Returns true when passed, ofcourse false when no.
@@ -935,8 +668,6 @@ class Jajjimento
 
 
     /**
-     * Validate Length
-     *
      * Check the length of the value is long enough like my dick or shorter than mine.
      *
      * @return bool
@@ -958,8 +689,6 @@ class Jajjimento
 
 
     /**
-     * Validate Range
-     *
      * Make sure the range is within my limit, otherwise I will be pissed off.
      *
      * @return bool
@@ -986,8 +715,6 @@ class Jajjimento
 
 
     /**
-     * Validate Date
-     *
      * Is this date same as the format which we wanted? Better is.
      *
      * @return bool
@@ -1014,8 +741,6 @@ class Jajjimento
 
 
     /**
-     * Validate In
-     *
      * Is the value in the array?
      *
      * @return bool
@@ -1033,8 +758,6 @@ class Jajjimento
 
 
     /**
-     * Validate Email
-     *
      * Make sure it's an email address.
      *
      * @return bool
@@ -1052,8 +775,6 @@ class Jajjimento
 
 
     /**
-     * Validate Gender
-     *
      * Yes, I mean, there's should be other genders right, not only men and women living on the earth I think.
      *
      * @return bool
@@ -1073,8 +794,6 @@ class Jajjimento
 
 
     /**
-     * Validate IP
-     *
      * Make sure it's an ip address.
      *
      * @param string|null $type   ipv4 and ipv6, null if both were allowed.
@@ -1102,8 +821,6 @@ class Jajjimento
 
 
     /**
-     * Validate URL
-     *
      * Make sure it's an url address.
      *
      * @return bool
@@ -1121,8 +838,6 @@ class Jajjimento
 
 
     /**
-     * Validate Equals
-     *
      * Make sure both were same or ggwp.
      *
      * @return bool
@@ -1142,8 +857,6 @@ class Jajjimento
 
 
     /**
-     * Validate Format
-     *
      * Time to RegEx.
      *
      * @return bool
@@ -1166,8 +879,6 @@ class Jajjimento
     /***********************************************
 
     /**
-     * Last Rule
-     *
      * Modify when the value is setted or get the information of the last rule.
      *
      * @param string info    The information name which we want to get.
@@ -1192,8 +903,6 @@ class Jajjimento
 
 
     /**
-     * Set Variables
-     *
      * Explode the variables into class variables, so we can use it in any funtions of the class.
      *
      * @param array $rule   The rule which we want to explode.
@@ -1232,8 +941,6 @@ class Jajjimento
 
 
     /**
-     * Clean
-     *
      * @return Jajjimento
      */
 
@@ -1252,8 +959,6 @@ class Jajjimento
 
 
     /**
-     * Empty To Null
-     *
      * Turn the emprt string to null.
      *
      * @return Jajjimento
@@ -1277,8 +982,6 @@ class Jajjimento
     /***********************************************
 
     /**
-     * Error
-     *
      * Log the error data here and why.
      *
      * @param string $reason   Why the rule not passed.

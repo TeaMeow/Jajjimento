@@ -136,52 +136,6 @@ class JajjimentoTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($this->Jajji->source($this->maxData)->check());
     }
 
-    function testFailCsrf()
-    {
-        $_SERVER['HTTP_X_CSRF'] = '65wat';
-
-        $this->Jajji->csrf = true;
-
-        $this->Jajji->add('username')->length(3, 12)->req()
-                    ->add('password')->length(6, 30)->req()
-                    ->add('birthday')->date('Y-m-d')->req()
-                    ->add('email')->email()->req();
-
-        $this->assertFalse($this->Jajji->source($this->data)->check());
-
-        echo $this->Jajji->getCrumbValue();
-    }
-
-    function testCsrf()
-    {
-        $_SERVER['HTTP_X_CSRF'] = $this->Jajji->getCrumbValue();
-
-        $this->Jajji->csrf = true;
-
-        $this->Jajji->add('username')->length(3, 12)->req()
-                    ->add('password')->length(6, 30)->req()
-                    ->add('birthday')->date('Y-m-d')->req()
-                    ->add('email')->email()->req();
-
-        $this->assertTrue($this->Jajji->source($this->data)->check());
-    }
-
-    function testInsertCrumb()
-    {
-        $this->Jajji->csrf = true;
-
-        $this->Jajji->add('username')->length(3, 12)->req()
-                    ->add('password')->length(6, 30)->req()
-                    ->add('birthday')->date('Y-m-d')->req()
-                    ->add('email')->email()->req();
-
-        $this->assertFalse($this->Jajji->source($this->data)->check());
-
-        echo $this->Jajji->insertCrumb();
-        echo $this->Jajji->insertCrumb(['ng-model' => 'test',
-                                        'ng-name'  => 'test2']);
-    }
-
     function testSaveAndLoad()
     {
         $rules = $this->Jajji->add('username')->length(3, 12)->req()
