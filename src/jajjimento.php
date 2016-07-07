@@ -874,9 +874,9 @@ class Jajjimento
 
         /** Store the token into the session */
         $_SESSION[$this->csrfName] = $token;
+
         /** Store the hashed token into the cookie */
         setcookie($this->csrfCookieName, $token, time() + (10 * 365 * 24 * 60 * 60), '', '', false, true);
-
 
         return $this;
     }
