@@ -23,7 +23,7 @@ class JajjimentoTest extends \PHPUnit_Framework_TestCase
     {
         $this->Jajji->add('username')->type('length')->min(3)->max(12)->required()
                     ->add('password')->type('length')->min(6)->max(30)->required()
-                    ->add('birthday')->type('date')-dateFormat('YYYY-mm-dd')->required()
+                    ->add('birthday')->type('date')->dateFormat('YYYY-mm-dd')->required()
                     ->add('email')->type('email')->required()
                     ->add('gender')->type('gender')->required()
                     ->add('option')->type('in')->inside(['A', 'B', 'C'])->required()
