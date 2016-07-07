@@ -94,7 +94,7 @@ class Jajjimento
 
         if(in_array($name, $basicFunctions))
             return call_user_func_array(array($this, '_' . $name), $args);
-    }
+    } // @codeCoverageIgnore
 
 
 
@@ -529,7 +529,7 @@ class Jajjimento
                 case 'gender': $this->validateGender();   break;
                 case 'ip'    : $this->validateIp();       break;
                 case 'ipv4'  : $this->validateIp('ipv4'); break;
-                case 'ipv4'  : $this->validateIp('ipv6'); break;
+                case 'ipv6'  : $this->validateIp('ipv6'); break;
                 case 'url'   : $this->validateUrl();      break;
                 case 'equals': $this->validateEquals();   break;
             }
