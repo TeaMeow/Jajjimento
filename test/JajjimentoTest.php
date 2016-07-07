@@ -32,6 +32,18 @@ class JajjimentoTest extends \PHPUnit_Framework_TestCase
                            'ipv6'     => '2',
                            'url'      => '..',
                            'jajjimento_token' => 'wtf'];
+        $this->maxData  = ['username' => 'y',
+                           'password' => 'y',
+                           'confirm'  => 'y',
+                           'birthday' => '1',
+                           'email'    => 'y',
+                           'gender'   => 'c',
+                           'option'   => 'F',
+                           'age'      => '100',
+                           'ip'       => '1',
+                           'ipv6'     => '2',
+                           'url'      => '..',
+                           'jajjimento_token' => 'wtf'];
     }
 
     function testBasic()
@@ -106,8 +118,28 @@ class JajjimentoTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($this->Jajji->source($this->minData)->check());
     }
 
-    function testCsrf()
+    function testMaxFails()
     {
+        $this->Jajji->add('username')->type('length')->min(3)->max(12)->required()
+                    ->add('password')->type('length')->min(6)->max(30)->required()
+                    ->add('birthday')->type('date')->dateFormat('Y-m-d')->required()
+                    ->add('email')->type('email')->required()
+                    ->add('gender')->type('gender')->required()
+                    ->add('option')->type('in')->inside(['A', 'B', 'C'])->required()
+                    ->add('confirm')->equals('password')
+                    ->add('age')->type('range')->min(1)->max(99)->format('/0-9/')->trim()->required()
+                    ->add('ip')->type('ip')->required()
+                    ->add('ip')->type('ipv4')->required()
+                    ->add('ipv6')->type('ipv6')->required()
+                    ->add('url')->type('url')->required();
+
+        $this->assertFalse($this->Jajji->source($this->maxData)->check());
+    }
+
+    function testFailCsrf()
+    {
+        $_SERVER['HTTP_X_CSRF'] = '65wat';
+
         $this->Jajji->csrf = true;
 
         $this->Jajji->add('username')->length(3, 12)->req()
@@ -118,6 +150,20 @@ class JajjimentoTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($this->Jajji->source($this->data)->check());
 
         echo $this->Jajji->getCrumbValue();
+    }
+
+    function testCsrf()
+    {
+        $_SERVER['HTTP_X_CSRF'] = $this->Jajji->getCrumbValue();
+
+        $this->Jajji->csrf = true;
+
+        $this->Jajji->add('username')->length(3, 12)->req()
+                    ->add('password')->length(6, 30)->req()
+                    ->add('birthday')->date('Y-m-d')->req()
+                    ->add('email')->email()->req();
+
+        $this->assertTrue($this->Jajji->source($this->data)->check());
     }
 
     function testInsertCrumb()

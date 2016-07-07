@@ -118,7 +118,7 @@ class Jajjimento
      * @var string
      */
 
-    public $csrfHeaderName = 'X-CSRF-TOKEN';
+    public $csrfHeaderName = 'HTTP_X_CSRF';
 
     /**
      * @var string      $field        Stores 'this round' rule informations.
@@ -155,8 +155,6 @@ class Jajjimento
 
         if(in_array($name, $basicFunctions))
             return call_user_func_array(array($this, '_' . $name), $args);
-
-        return $this;
     }
 
 
@@ -926,7 +924,7 @@ class Jajjimento
 
     function validateRequired()
     {
-        if(!$this->field || ctype_space($this->field) || mb_strlen($this->field, $this->charset) == 0)
+        if($this->field === false || $this->field === null || ctype_space($this->field) || mb_strlen($this->field, $this->charset) == 0)
             return $this->error('Required but nothing here.');
 
 
@@ -1205,12 +1203,12 @@ class Jajjimento
 
     function setVariables($rule)
     {
+        $this->field = null;
+
         if($this->source == false)
             $this->field = $rule['field'];
         elseif(isset($this->source[$rule['field']]))
             $this->field = $this->source[$rule['field']];
-        else
-            $this->field = null;
 
         $this->rawField   = $rule['field'];
         $this->type       = $rule['type'];
