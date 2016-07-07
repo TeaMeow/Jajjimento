@@ -1000,7 +1000,7 @@ class Jajjimento
         {
             $date = DateTime::createFromFormat($dateFormat, $this->field);
 
-            $passed = ($date && $date->format($this->dateFormat) == $date);
+            $passed = ($date && $date->format($dateFormat) == $date);
         }
 
         if(!$passed)
