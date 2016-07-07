@@ -1000,7 +1000,7 @@ class Jajjimento
         {
             $date = DateTime::createFromFormat($dateFormat, $this->field);
 
-            $passed = ($date && $date->format($this->dateDormat) == $date);
+            $passed = ($date && $date->format($this->dateFormat) == $date);
         }
 
         if(!$passed)
@@ -1062,7 +1062,7 @@ class Jajjimento
     {
         $gender = strtolower($this->field);
 
-        if($gender != 'o' || $gender != 'm' || $gender != 'f')
+        if($gender != 'o' && $gender != 'm' && $gender != 'f')
             return $this->error('Not a gender.');
 
         return true;
