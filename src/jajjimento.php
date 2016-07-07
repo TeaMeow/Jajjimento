@@ -665,7 +665,7 @@ class Jajjimento
         /** Call the log function if any errors occurred */
         if(!empty($this->errors))
             $this->log();
-
+        var_dump($this->errors);
         $isEmpty = empty($this->errors);
 
         /** Remove the safe if the validation failure */

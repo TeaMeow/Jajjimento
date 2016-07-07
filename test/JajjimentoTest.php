@@ -50,6 +50,24 @@ class JajjimentoTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($this->Jajji->source($this->data)->check());
     }
 
+    function testManual()
+    {
+        $this->Jajji->add($this->data['username'])->type('length')->min(3)->max(12)->required()
+                    ->add($this->data['password'])->type('length')->min(6)->max(30)->required()
+                    ->add($this->data['birthday'])->type('date')->dateFormat('Y-m-d')->required()
+                    ->add($this->data['email'])->type('email')->required()
+                    ->add($this->data['gender'])->type('gender')->required()
+                    ->add($this->data['option'])->type('in')->inside(['A', 'B', 'C'])->required()
+                    ->add($this->data['confirm'])->equals('password')
+                    ->add($this->data['age'])->type('range')->min(1)->max(99)->format('/^[0-9]*$/')->trim()->required()
+                    ->add($this->data['ip'])->type('ip')->required()
+                    ->add($this->data['ip'])->type('ipv4')->required()
+                    ->add($this->data['ipv6'])->type('ipv6')->required()
+                    ->add($this->data['url'])->type('url')->required();
+
+        $this->assertTrue($this->Jajji->check());
+    }
+
     function testShorthands()
     {
         $this->Jajji->add('username')->length(3, 12)->req()
