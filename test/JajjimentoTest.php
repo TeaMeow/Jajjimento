@@ -32,7 +32,7 @@ class JajjimentoTest extends \PHPUnit_Framework_TestCase
                     ->add('ip')->type('ip')->required()
                     ->add('ip')->type('ipv4')->required()
                     ->add('ipv6')->type('ipv6')->required()
-                    ->add('url')->type('url')->required()
+                    ->add('url')->type('url')->required();
 
         $this->Jajji->source($this->data)->check();
     }
@@ -50,7 +50,7 @@ class JajjimentoTest extends \PHPUnit_Framework_TestCase
                     ->add('ip')->ip()->req()
                     ->add('ip')->ipv4()->req()
                     ->add('ipv6')->ipv6()->req()
-                    ->add('url')->url()->req()
+                    ->add('url')->url()->req();
 
         $this->Jajji->source($this->data)->check();
     }
