@@ -1,6 +1,8 @@
 <?php
 require 'jajjimento.php';
 
+session_start();
+
 class JajjimentoTest extends \PHPUnit_Framework_TestCase
 {
     function __construct()
@@ -45,7 +47,9 @@ class JajjimentoTest extends \PHPUnit_Framework_TestCase
                     ->add('ipv6')->type('ipv6')->required()
                     ->add('url')->type('url')->required();
 
-        $this->Jajji->source($this->data)->check();
+        echo var_dump($this->Jajji->errors);
+
+        $this->assertTrue($this->Jajji->source($this->data)->check());
     }
 
     function testShorthands()
@@ -62,6 +66,8 @@ class JajjimentoTest extends \PHPUnit_Framework_TestCase
                     ->add('ip')->ipv4()->req()
                     ->add('ipv6')->ipv6()->req()
                     ->add('url')->url()->req();
+
+        echo var_dump($this->Jajji->errors);
 
         $this->assertTrue($this->Jajji->source($this->data)->check());
     }
@@ -81,6 +87,8 @@ class JajjimentoTest extends \PHPUnit_Framework_TestCase
                     ->add('ipv6')->type('ipv6')->required()
                     ->add('url')->type('url')->required();
 
+        echo var_dump($this->Jajji->errors);
+
         $this->assertFalse($this->Jajji->source($this->minData)->check());
     }
 
@@ -93,6 +101,8 @@ class JajjimentoTest extends \PHPUnit_Framework_TestCase
                     ->add('birthday')->date('YYYY-mm-dd')->req()
                     ->add('email')->email()->req();
 
+        echo var_dump($this->Jajji->errors);
+
         $this->assertFalse($this->Jajji->source($this->data)->check());
 
         $this->Jajji->getCrumbValue();
@@ -101,6 +111,26 @@ class JajjimentoTest extends \PHPUnit_Framework_TestCase
     function testInsertCrumb()
     {
         echo $this->Jajji->insertCrumb();
+    }
+
+    function testSaveAndLoad()
+    {
+        $rules = $this->Jajji->add('username')->length(3, 12)->req()
+                             ->add('password')->length(6, 30)->req()
+                             ->add('birthday')->date('YYYY-mm-dd')->req()
+                             ->add('email')->email()->req()
+                             ->add('gender')->gender()->req()
+                             ->add('option')->in(['A', 'B', 'C'])->req()
+                             ->add('confirm')->equals('password')
+                             ->add('age')->range(1, 99)->format('/0-9/')->trim()->req()
+                             ->add('ip')->ip()->req()
+                             ->add('ip')->ipv4()->req()
+                             ->add('ipv6')->ipv6()->req()
+                             ->add('url')->url()->req()->save();
+
+        echo var_dump($this->Jajji->errors);
+
+        $this->assertTrue($this->Jajji->source($this->data)->loadCheck($rules));
     }
 
 
