@@ -48,8 +48,6 @@ class JajjimentoTest extends \PHPUnit_Framework_TestCase
                     ->add('url')->type('url')->required();
 
         $this->assertTrue($this->Jajji->source($this->data)->check());
-
-        echo var_dump($this->Jajji->errors);
     }
 
     function testShorthands()
@@ -68,8 +66,6 @@ class JajjimentoTest extends \PHPUnit_Framework_TestCase
                     ->add('url')->url()->req();
 
         $this->assertTrue($this->Jajji->source($this->data)->check());
-
-        echo var_dump($this->Jajji->errors);
     }
 
     function testFails()
@@ -88,8 +84,6 @@ class JajjimentoTest extends \PHPUnit_Framework_TestCase
                     ->add('url')->type('url')->required();
 
         $this->assertFalse($this->Jajji->source($this->minData)->check());
-
-        echo var_dump($this->Jajji->errors);
     }
 
     function testCsrf()
@@ -102,8 +96,6 @@ class JajjimentoTest extends \PHPUnit_Framework_TestCase
                     ->add('email')->email()->req();
 
         $this->assertFalse($this->Jajji->source($this->data)->check());
-
-        echo var_dump($this->Jajji->errors);
 
         echo $this->Jajji->getCrumbValue();
     }
@@ -118,8 +110,6 @@ class JajjimentoTest extends \PHPUnit_Framework_TestCase
                     ->add('email')->email()->req();
 
         $this->assertFalse($this->Jajji->source($this->data)->check());
-
-        echo var_dump($this->Jajji->errors);
 
         echo $this->Jajji->insertCrumb();
         echo $this->Jajji->insertCrumb(['ng-model' => 'test',
@@ -142,10 +132,6 @@ class JajjimentoTest extends \PHPUnit_Framework_TestCase
                              ->add('url')->url()->req()->save();
 
         $this->assertTrue($this->Jajji->source($this->data)->loadCheck($rules));
-
-        echo var_dump($this->Jajji->errors);
     }
-
-
 }
 ?>
