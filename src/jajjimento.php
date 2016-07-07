@@ -1087,7 +1087,7 @@ class Jajjimento
 
         if($type == 'ipv6')
             if(!filter_var($this->field, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6))
-                return $this->error('Not an ipv4.');
+                return $this->error('Not an ipv6.');
 
         if(!filter_var($this->field, FILTER_VALIDATE_IP))
             return $this->error('Not an ip.');
