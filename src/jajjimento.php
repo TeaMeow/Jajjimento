@@ -665,7 +665,7 @@ class Jajjimento
         /** Call the log function if any errors occurred */
         if(!empty($this->errors))
             $this->log();
-        var_dump($this->errors);
+
         $isEmpty = empty($this->errors);
 
         /** Remove the safe if the validation failure */
@@ -779,7 +779,10 @@ class Jajjimento
 
     function csrfFieldCheck()
     {
-        $token = $this->source[$this->csrfFieldName];
+        $token = isset($this->source[$this->csrfFieldName]) ? $this->source[$this->csrfFieldName] : null;
+
+        if($token === null)
+            return false;
 
         return $this->csrfValidate($token);
     }
