@@ -17,6 +17,7 @@ build:
     - apt-get -y install php-xml
     - apt-get -y install php-mysql
     - apt-get -y install php-curl
+    - apt-get -y install php7.0-mbstring
 
     # xdebug
     - printf "%s\n------------------------------\n--------  X D E B U G --------\n------------------------------%s\n%s\n"
