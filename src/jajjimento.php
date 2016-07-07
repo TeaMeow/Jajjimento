@@ -150,7 +150,7 @@ class Jajjimento
 
     public function __call($name, $args)
     {
-        $basicFunctions = ['type', 'min', 'max', 'required', 'format', 'trim', 'req', 'length', 'range', 'equals',
+        $basicFunctions = ['type', 'min', 'max', 'required', 'format', 'trim', 'req', 'length', 'range', 'equals', 'in',
                            'date', 'inside', 'email', 'gender', 'ip', 'ipv4', 'ipv6', 'url', 'urlNot', 'target', 'dateFormat'];
 
         if(in_array($name, $basicFunctions))
@@ -1003,7 +1003,7 @@ class Jajjimento
         {
             $date = DateTime::createFromFormat($dateFormat, $this->field);
 
-            $passed = ($date && $date->format($dateFormat) == $date);
+            $passed = ($date && $date->format($dateFormat) === $this->field);
         }
 
         if(!$passed)
