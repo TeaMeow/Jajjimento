@@ -105,11 +105,22 @@ class JajjimentoTest extends \PHPUnit_Framework_TestCase
 
         $this->assertFalse($this->Jajji->source($this->data)->check());
 
-        $this->Jajji->getCrumbValue();
+        echo $this->Jajji->getCrumbValue();
     }
 
     function testInsertCrumb()
     {
+        $this->Jajji->csrf = true;
+
+        $this->Jajji->add('username')->length(3, 12)->req()
+                    ->add('password')->length(6, 30)->req()
+                    ->add('birthday')->date('YYYY-mm-dd')->req()
+                    ->add('email')->email()->req();
+
+        echo var_dump($this->Jajji->errors);
+
+        $this->assertFalse($this->Jajji->source($this->data)->check());
+
         echo $this->Jajji->insertCrumb();
     }
 

@@ -10,9 +10,9 @@ if(!function_exists('getallheaders'))
 {
     function getallheaders()
     {
-        $headers = '';
+        $headers = [];
 
-        foreach ($_SERVER as $name => $value)
+        foreach($_SERVER as $name => $value)
             if(substr($name, 0, 5) == 'HTTP_')
                 $headers[str_replace(' ', '-', ucwords(strtolower(str_replace('_', ' ', substr($name, 5)))))] = $value;
 
@@ -737,9 +737,6 @@ class Jajjimento
         if(!$this->hasCsrf())
             $this->initializeCsrf();
 
-        //if(!hash_equals($token, crypy($trueToken, $key)))
-        //
-
         if(!$this->csrfHeaderCheck() && !$this->csrfFieldCheck())
             $this->error('Crumb error.');
 
@@ -762,7 +759,7 @@ class Jajjimento
         $token = false;
 
         /** Get the value of the custom header */
-        foreach (getallheaders() as $name => $value)
+        foreach(getallheaders() as $name => $value)
             if($name == $this->csrfHeaderName)
                 $token = $value;
 
@@ -873,10 +870,10 @@ class Jajjimento
     function initializeCsrf()
     {
         /** Generate a random string */
-        $token        = md5(uniqid(mt_rand(), true));
+        $token = md5(uniqid(mt_rand(), true));
 
         /** Store the token into the session */
-        $_SESSION[$this->csrfName]    = $token;
+        $_SESSION[$this->csrfName] = $token;
         /** Store the hashed token into the cookie */
         setcookie($this->csrfCookieName, $token, time() + (10 * 365 * 24 * 60 * 60), '', '', false, true);
 
