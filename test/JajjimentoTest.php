@@ -36,7 +36,7 @@ class JajjimentoTest extends \PHPUnit_Framework_TestCase
     {
         $this->Jajji->add('username')->type('length')->min(3)->max(12)->required()
                     ->add('password')->type('length')->min(6)->max(30)->required()
-                    ->add('birthday')->type('date')->dateFormat('YYYY-mm-dd')->required()
+                    ->add('birthday')->type('date')->dateFormat('Y-m-d')->required()
                     ->add('email')->type('email')->required()
                     ->add('gender')->type('gender')->required()
                     ->add('option')->type('in')->inside(['A', 'B', 'C'])->required()
@@ -54,7 +54,7 @@ class JajjimentoTest extends \PHPUnit_Framework_TestCase
     {
         $this->Jajji->add('username')->length(3, 12)->req()
                     ->add('password')->length(6, 30)->req()
-                    ->add('birthday')->date('YYYY-mm-dd')->req()
+                    ->add('birthday')->date('Y-m-d')->req()
                     ->add('email')->email()->req()
                     ->add('gender')->gender()->req()
                     ->add('option')->in(['A', 'B', 'C'])->req()
@@ -72,7 +72,7 @@ class JajjimentoTest extends \PHPUnit_Framework_TestCase
     {
         $this->Jajji->add('username')->type('length')->min(3)->max(12)->required()
                     ->add('password')->type('length')->min(6)->max(30)->required()
-                    ->add('birthday')->type('date')->dateFormat('YYYY-mm-dd')->required()
+                    ->add('birthday')->type('date')->dateFormat('Y-m-d')->required()
                     ->add('email')->type('email')->required()
                     ->add('gender')->type('gender')->required()
                     ->add('option')->type('in')->inside(['A', 'B', 'C'])->required()
@@ -92,7 +92,7 @@ class JajjimentoTest extends \PHPUnit_Framework_TestCase
 
         $this->Jajji->add('username')->length(3, 12)->req()
                     ->add('password')->length(6, 30)->req()
-                    ->add('birthday')->date('YYYY-mm-dd')->req()
+                    ->add('birthday')->date('Y-m-d')->req()
                     ->add('email')->email()->req();
 
         $this->assertFalse($this->Jajji->source($this->data)->check());
@@ -106,7 +106,7 @@ class JajjimentoTest extends \PHPUnit_Framework_TestCase
 
         $this->Jajji->add('username')->length(3, 12)->req()
                     ->add('password')->length(6, 30)->req()
-                    ->add('birthday')->date('YYYY-mm-dd')->req()
+                    ->add('birthday')->date('Y-m-d')->req()
                     ->add('email')->email()->req();
 
         $this->assertFalse($this->Jajji->source($this->data)->check());
@@ -120,7 +120,7 @@ class JajjimentoTest extends \PHPUnit_Framework_TestCase
     {
         $rules = $this->Jajji->add('username')->length(3, 12)->req()
                              ->add('password')->length(6, 30)->req()
-                             ->add('birthday')->date('YYYY-mm-dd')->req()
+                             ->add('birthday')->date('Y-m-d')->req()
                              ->add('email')->email()->req()
                              ->add('gender')->gender()->req()
                              ->add('option')->in(['A', 'B', 'C'])->req()
