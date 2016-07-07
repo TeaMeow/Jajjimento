@@ -22,7 +22,7 @@ class JajjimentoTest extends \PHPUnit_Framework_TestCase
                     ->add('age')->type('range')->min(1)->max(99)
                     ->add('url')->url()->req();
 
-        $jaji->source($data)->check();
+        $this->Jajji->source($data)->check();
     }
 }
 ?>
