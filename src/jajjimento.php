@@ -501,8 +501,8 @@ class Jajjimento
 
     function check()
     {
-        /** Clean the previous data before we check the rules, but do not full clean (prevent we clean the rules) */
-        $this->clean();
+        /** Clean the previous errors before we check the rules */
+        $this->clean(true);
 
         foreach($this->rules as $rule)
         {
@@ -560,8 +560,8 @@ class Jajjimento
         /** Remove the safe if the validation failure */
         $this->safe = [];
 
-        /** Do a full clean */
-        $this->clean(true);
+        /** Do a full clean but leavel the error messages */
+        $this->clean();
 
         return $isEmpty;
     }
@@ -924,21 +924,29 @@ class Jajjimento
 
 
     /**
+     * Clean the data.
+     *
+     * @param bool $cleanError   Set true to clean the error messages only.
+     *
      * @return Jajjimento
      */
 
-    function clean($fullClean = false)
+    function clean($cleanError = false)
     {
-        $this->field    = $this->rawField   = $this->type   = $this->min    = $this->max  =
-        $this->required = $this->dateFormat = $this->inside = $this->urlNot = $this->trim =
-        $this->format   = $this->target     = $this->failed = null;
+        if($cleanError)
+        {
+            $this->errors = [];
+        }
+        else
+        {
+            $this->field    = $this->rawField   = $this->type   = $this->min    = $this->max  =
+            $this->required = $this->dateFormat = $this->inside = $this->urlNot = $this->trim =
+            $this->format   = $this->target     = $this->failed = null;
 
-        $this->errors = [];
-        $this->last   = -1;
-        $this->source = false;
-
-        if($fullClean)
-            $this->rules = [];
+            $this->rules    = [];
+            $this->last     = -1;
+            $this->source   = false;
+        }
     }
 
 
