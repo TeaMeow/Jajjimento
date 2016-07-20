@@ -501,6 +501,9 @@ class Jajjimento
 
     function check()
     {
+        /** Clean the previous data before we check the rules */
+        $this->clean();
+
         foreach($this->rules as $rule)
         {
             /** Explode the variables first */
@@ -556,8 +559,6 @@ class Jajjimento
 
         /** Remove the safe if the validation failure */
         $this->safe = [];
-
-        $this->clean();
 
         return $isEmpty;
     }
@@ -929,6 +930,7 @@ class Jajjimento
         $this->required = $this->dateFormat = $this->inside = $this->urlNot = $this->trim =
         $this->format   = $this->target     = $this->failed = null;
 
+        $this->errors = [];
         $this->rules  = [];
         $this->last   = -1;
         $this->source = false;
