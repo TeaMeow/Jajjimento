@@ -511,7 +511,7 @@ $.ajaxSetup(
 
 如果你有 [艾拉](http://github.com/TeaMeow/Aira) 來協助你處理錯誤，
 
-那麼你應該將此這為 True（預設為 False。）。
+那麼你應該將此這為 True（預設為 False）。
 
 ```php
 $jaji->hasAira = true;
